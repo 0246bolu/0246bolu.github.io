@@ -5,15 +5,13 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
-let numBuildings = 0;
+// let numBuildings = 0;
 let currentBack = 0;
+let buildingRan = false;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(RGB);
-}
-
-function draw() {
   drawBg();
 }
 
@@ -22,30 +20,48 @@ function mouseClicked(){
     currentBack++;
   }
   else{
-    currentBack===0;
+    currentBack=0;
   }
+  drawBg();
+  buildingRan = false;
 }
 
 function drawBg() {
-  if(currentBack = 0){
+  if(currentBack === 0){
     background(0, 0, 225);
     fill(255, 255, 0);
     circle(0, 0, 200);
   }
-  if(currentBack = 1){
-    background(0, 0, 225);
+  if(currentBack === 1){
+    background(0, 0, 0);
     fill(255, 255, 0);
     circle(0, 0, 200);
   }
-  drawCity();
+  if(currentBack === 2){
+    background(0, 0, 100);
+    fill(255, 255, 0);
+    circle(0, 0, 200);
+  }
+  if(currentBack === 3){
+    background(0, 0, 150);
+    fill(255, 255, 0);
+    circle(0, 0, 200);
+  }
+
+  if (buildingRan === false){
+    drawCity();
+  }
+
 }
 
 function drawCity() {
+  let numBuildings = 0;
+  
   fill(150);
   rect(0, windowHeight-windowHeight/10, windowWidth);
 
-  while (numBuildings<=5){
-    let heightBuild = random(500, 1000);
+  while (numBuildings<=4){
+    let heightBuild = random(300, 700);
     let widthBuild = random(200, 500);
     let buildXPos = random(0, windowWidth);
     let buildYPos = windowHeight-windowHeight/10;
@@ -55,8 +71,10 @@ function drawCity() {
 
     numBuildings++;
   }
+
+  buildingRan = true;
 }
 
 function drawCharacter() {
-
+  
 }
