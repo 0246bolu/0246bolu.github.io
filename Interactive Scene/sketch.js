@@ -10,12 +10,12 @@ let buildingRan = false;
 let windowColor = 0;
 
 let carX = 0;
-let carY = 50;
+let carY = 90;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(RGB);
-  drawBg();
+  drawBg(); 
 }
 
 
@@ -68,6 +68,8 @@ function drawCity() {
   fill(150);
   rect(0, windowHeight-windowHeight/10, windowWidth);
 
+  randomSeed(10);
+
   while (numBuildings<=4){
     let heightBuild = random(300, 700);
     let widthBuild = random(200, 500);
@@ -90,11 +92,17 @@ function drawCity() {
 
     numBuildings++;
   }
+  
+  fill(250);
+  textStyle(NORMAL);
+  text("Lucas Boyd", 20, windowHeight-windowHeight/10);
+  textStyle(ITALIC);
+  text("Chicago", 20, windowHeight-windowHeight/12); 
+  
   buildingRan = true;
 }
 
 function draw(){
-  randomSeed(1);
   if(keyIsPressed){
     if (key === "d"){
       buildingRan = false;
@@ -109,10 +117,15 @@ function draw(){
     if(carX>=windowWidth){
       carX=0;
     }
-    if(carX<=0){
+    if(carX<=0-250){
       carX=windowWidth;
     }
   }
-  fill(50,150,255)
-  rect(carX, carY, 100, 100)
+
+  fill(255);
+  ellipse(carX+150, carY+25, 200, 50);
+  triangle(carX+70, carY, carX+140, carY, carX, carY-70);
+  triangle(carX+80, carY, carX+150, carY, carX, carY+140);
+  triangle(carX, carY, carX, carY, carX, carY);
+  rect(carX, carY, 150, 50);
 }
