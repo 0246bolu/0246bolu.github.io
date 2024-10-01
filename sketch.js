@@ -1,27 +1,29 @@
 // Interactive Scene
 // Lucas Boyd 
 // 9/21/24
-//This project creates a city by randomly generating buildings, and allows the user to control a plane, as well as change the color of the sky and plane.
+//
+// Extra for Experts:
+// - describe what you did to take this project "above and beyond"
 
-let currentBack = 0;              //Defining Global Variables to be used elsewhere
+let currentBack = 0;
 let buildingRan = false;
 let windowColor = 0;
 
-let carX = 20;                    
+let carX = 20;
 let carY = 90;
 
 let planeIteration = 0;
 let planeColor = 0;
 let colorChange = false;
 
-function setup() {     // Sizes canvas on which the city will be draw, sets color mode and calls the background drawer
+function setup() {
   createCanvas(windowWidth, windowHeight);
   colorMode(RGB);
   drawBg(); 
 }
 
 
-function mouseClicked(){  // Checks if mouse is clicked, and if it is, it changes the currentBack variable by one and calls the background drawer again
+function mouseClicked(){
   if(currentBack<3){
     currentBack++;
   }
@@ -32,7 +34,7 @@ function mouseClicked(){  // Checks if mouse is clicked, and if it is, it change
   drawBg();
 }
 
-function drawBg() {  //Draws the background, whose color depends on the current value of currentBack(see the mouseClicked funtion)
+function drawBg() {
   if(currentBack === 0){
     background(0, 0, 225);
     fill(255, 255, 0);
@@ -58,13 +60,13 @@ function drawBg() {  //Draws the background, whose color depends on the current 
     windowColor = [0,0,150];
   }
 
-  if (buildingRan === false){  // Checks if buildings have already been drawn. If not, the drawCity function is called
+  if (buildingRan === false){
     colorChange = false;
     drawCity();
   }
 }
 
-function drawCity() { // Draws the ground, then runs a loop 5 times that draws the buildings and a random position and size and their respective windows, and then finally writes Lucas Boyd and then the name of the piece in itallics
+function drawCity() {
   let numBuildings = 0;
   
   fill(150);
@@ -79,10 +81,10 @@ function drawCity() { // Draws the ground, then runs a loop 5 times that draws t
     let buildYPos = windowHeight-windowHeight/10;
 
     fill(160,82,45);
-    rect(buildXPos, buildYPos, widthBuild, -heightBuild); //Drawing the buildings
+    rect(buildXPos, buildYPos, widthBuild, -heightBuild);
 
     fill(windowColor);
-    rect(buildXPos+widthBuild/4, buildYPos-heightBuild/5, widthBuild/8, heightBuild/8);   //Drawing the windows
+    rect(buildXPos+widthBuild/4, buildYPos-heightBuild/5, widthBuild/8, heightBuild/8);
     rect(buildXPos+widthBuild/1.5, buildYPos-heightBuild/5, widthBuild/8, heightBuild/8);
 
     rect(buildXPos+widthBuild/4, buildYPos-heightBuild/2, widthBuild/8, heightBuild/8);
@@ -95,8 +97,8 @@ function drawCity() { // Draws the ground, then runs a loop 5 times that draws t
     numBuildings++;
   }
   
-  fill(250);  //Writing the Lucas Boyd and Chicago
-  textStyle(NORMAL); 
+  fill(250);
+  textStyle(NORMAL);
   text("Lucas Boyd", 20, windowHeight-windowHeight/10);
   textStyle(ITALIC);
   text("Chicago", 20, windowHeight-windowHeight/12); 
@@ -104,7 +106,7 @@ function drawCity() { // Draws the ground, then runs a loop 5 times that draws t
   buildingRan = true;
 }
 
-function draw(){ //Runs every frame, checks for user input to move and change the color of the plane, which is then drawn
+function draw(){
   if(keyIsPressed){
     if (key === "c"  && colorChange===false){
       if(planeIteration<2){
@@ -125,7 +127,7 @@ function draw(){ //Runs every frame, checks for user input to move and change th
       drawBg();
       carX -= 10;
     }
-    if(carX>=windowWidth){  //Checks if plane is off screen. If it is, it is transported to the other side of the screen
+    if(carX>=windowWidth){
       carX=0;
     }
     else if(carX<=-75){
@@ -143,8 +145,8 @@ function draw(){ //Runs every frame, checks for user input to move and change th
     planeColor = [0,128,0];
   }
 
-  fill(planeColor);  // Drawing the plane
-  ellipse(carX+150/2, carY+25/2, 200/2, 50/2); 
+  fill(planeColor);
+  ellipse(carX+150/2, carY+25/2, 200/2, 50/2);
   triangle(carX+70/2, carY, carX+140/2, carY, carX, carY-70/2);
   triangle(carX+80/2, carY, carX+150/2, carY, carX, carY+140/2);
   triangle(carX-1/2, carY+50/2, carX+50/2, carY+50/2, carX, carY-70/2);
@@ -159,7 +161,7 @@ function draw(){ //Runs every frame, checks for user input to move and change th
   let windiesNum = 0;
   let windowOffset = 15;
 
-  while(windiesNum <= 3){ //Loop to draw windows
+  while(windiesNum <= 3){
     fill(0);
     circle(carX+windowOffset, carY+25/2, 16/2);
     windiesNum++;
