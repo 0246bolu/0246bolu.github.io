@@ -1,64 +1,83 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// Perlin Noise Terrain Generation
+// Lucas Boyd
+// 10/3/2024
+// Uses Perlin noise to generate terrain, each frame drawing a flag at the highest point, finding the average height and drawing a line there and panning
 
-let perlinTime = 20;
+
+let perlinTime = 20; // Assigning values to global variables to be used later
 let terrainSteepness = 0.01;
-
-let rectWidth = 20;
+let rectWidth = 10;
 
 let tallest = 0;
 
 let flagX = 0;
 let flagY = 0;
 
+let timePassed = 0;
 
-function setup() {
+
+function setup() { //Sets up canvas, determines frame rate and sets color mode to RGB
   createCanvas(windowWidth, windowHeight);
-  frameRate(10);
+  frameRate(60);
+  colorMode(RGB);
 }
 
-function draw() {
+function draw() { // Runs every frame, drawing the background, checking for arrow key presses to increase and decrease rectangle width and calls the terrain drawing function
   background(220);
   if(keyIsPressed){
     if(keyCode===39){
-      rectWidth+=5;
+      rectWidth+=1;
     }
-    if(keyCode===37 && rectWidth > 5){
-        rectWidth-=5;
+    if(keyCode===37 && rectWidth > 1){
+        rectWidth-=1;
     }
   }
   terrain();
 }
 
 function terrain(){
-  let flagHeightList = [];
-  for(let x=0; x <= width; x += rectWidth){
+  let flagHeightList = []; // Resets dynamic variables and arrays for usage each time the terrain is drawn
+  let average = 0;
+  let tallest = 0;
+  let heightAdder = 0;
+  for(let x=0; x <= windowWidth; x += rectWidth){ // Loop that draws rectangles of random height and at a predetermined width until the screen is filled
     noFill();
-    let rectHeight = noise(perlinTime);
+    let rectHeight = noise(perlinTime+timePassed); // Randomly generates rectangles and adds time elapsed to pan
     rectHeight = map(rectHeight, 0, 1, 5, windowHeight-windowHeight/5);
     rect(x, height, rectWidth, -rectHeight);
     perlinTime += terrainSteepness;
-    flagHeightList.push(rectHeight);
+    flagHeightList.push(rectHeight); // Adds each rectangle height to an array to be used later
   }
-  perlinTime = 20;
-  for (let r=0; r < flagHeightList.length; r++) {
+  for(let r=0; r < flagHeightList.length; r++) { // Parses through aforementioned array to find tallest point, then creates two variables which determine the flag's x and y positions from that information
     if (flagHeightList[r] > tallest) {
         tallest = flagHeightList[r];
         flagX = r*rectWidth+rectWidth/2;
         flagY = windowHeight-tallest;
     }
+  perlinTime = 20; // Resets perlinTime
   }
-  tallest = 0;
-  drawFlag(flagX,flagY);
+  for(let i=0; i < flagHeightList.length; i++){ // For each item in the flagHeightList, it adds the value to heightAdder
+    heightAdder+=flagHeightList[i];
+  }
+  average = heightAdder/flagHeightList.length; // Finds the average by dividing the added heights by the amount of rectangles on screen
+  timePassed+=0.01; // Adds time elapsed
+  drawFlag(flagX,flagY); // Calls flag drawing function with the aforementioned flag coordinates as parameters
+  drawAverage(average); // Calls average drawing function with the aforementioned average height as a parameter
 }
 
-function drawFlag(x, y){
+function drawFlag(x, y){ // Draws a green flag at predetermined tallest peak at x and y
   strokeWeight(5);
   line(x,y,x,y-50);
-  triangle(flagX,flagY-50,flagX,flagY-25,flagX+20,flagY-37.5);
+  fill(0,255,0);
+  triangle(x,y-50,x,y-25,x+20,y-37.5);
+  noFill();
+  strokeWeight(1);
+}
+
+function drawAverage(average){ // Draws a green line at the average terrain height
+  strokeWeight(3);
+  stroke(0,255,0);
+  line(0, windowHeight-average, windowWidth, windowHeight-average);
+  stroke(0);
   strokeWeight(1);
 }
