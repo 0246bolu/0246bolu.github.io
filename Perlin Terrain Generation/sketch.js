@@ -54,15 +54,15 @@ function terrain(){
         flagX = r*rectWidth+rectWidth/2;
         flagY = windowHeight-tallest;
     }
-  perlinTime = 20; // Resets perlinTime
+  perlinTime = 20;
   }
   for(let i=0; i < flagHeightList.length; i++){ // For each item in the flagHeightList, it adds the value to heightAdder
     heightAdder+=flagHeightList[i];
   }
   average = heightAdder/flagHeightList.length; // Finds the average by dividing the added heights by the amount of rectangles on screen
-  timePassed+=0.01; // Adds time elapsed
-  drawFlag(flagX,flagY); // Calls flag drawing function with the aforementioned flag coordinates as parameters
-  drawAverage(average); // Calls average drawing function with the aforementioned average height as a parameter
+  timePassed+=0.01; 
+  drawFlag(flagX,flagY);
+  drawAverage(average);
 }
 
 function drawFlag(x, y){ // Draws a green flag at predetermined tallest peak at x and y
