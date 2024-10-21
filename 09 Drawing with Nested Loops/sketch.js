@@ -33,6 +33,7 @@ function draw() {
     circle(0,l,20);
     line(0,l,mouseX,mouseY);
   }
+  circle(mouseX,mouseY, 50)
 }
 
 function circleDistance(x1,y1,x2,y2){
