@@ -8,6 +8,7 @@
 let eastbound = [];
 let westbound = [];
 let TrafficLight;
+let mode = "go";
 
 
 function setup() {
@@ -29,6 +30,7 @@ function draw() {
   for(let w=0;w<westbound.length;w++){
     westbound[w].action(r);
   }
+  stopLight();
 }
 
 function mouseClicked(){
@@ -37,12 +39,6 @@ function mouseClicked(){
   }
   else{
     eastbound.push(new Vehicle(Math.round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0,windowWidth), random(windowHeight/2+40, windowHeight),"pos",random(1,20)));
-  }
-}
-
-function keyPressed(){
-  if(keyCode===32){
-    new Lights([255,0,0]);
   }
 }
 
@@ -126,6 +122,7 @@ class Vehicle{
     this.color = [random(0,255), random(0,255), random(0,255)];
   }
   action(r){
+    stopLight();
     this.move();
     if(Math.round(r)===50){
       this.speedUp();
@@ -136,11 +133,39 @@ class Vehicle{
   }
 }
 
-class Lights{
-  contructor(c){
-    this.c = c;
+function stopLight(){
+  fill(200,125,0);
+  rect(0,0,windowWidth/10, windowHeight/5);
+  if(keyCode===32){
+    for(let f = 0; f<120; f++){
+      mode = "stop";
+      TrafficLight.drawLights();
+    }
   }
-  drawLight(){
-    rect(0,0,80,160);
+  else{
+    mode = "go";
+  }
+  TrafficLight = new Lights(mode);
+  TrafficLight.drawLights();
+}
+
+class Lights{
+  constructor(trafficMode){
+    print(trafficMode)
+    this.trafficMode = trafficMode;
+  }
+  drawLights(){
+    if(this.trafficMode === "stop"){
+      fill(255,0,0);
+      circle(50,50,60);
+      fill(1,50,32);
+      circle(50, 145, 60);
+    }
+    else{
+      fill(139,0,0);
+      circle(50,50,60);
+      fill(0,255,0);
+      circle(50, 145, 60);
+    }
   }
 }
