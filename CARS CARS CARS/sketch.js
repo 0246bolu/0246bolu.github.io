@@ -9,6 +9,7 @@ let eastbound = [];
 let westbound = [];
 let TrafficLight;
 let mode = "go";
+let timer = 120;
 
 
 function setup() {
@@ -30,7 +31,14 @@ function draw() {
   for(let w=0;w<westbound.length;w++){
     westbound[w].action(r);
   }
-  stopLight();
+  if (mode === "stop"){
+    timer -= 1;
+  }
+  if (timer === 0) {
+    timer = 120;
+    mode = "go";
+  }
+  TrafficLight.drawLights()
 }
 
 function mouseClicked(){
@@ -133,18 +141,16 @@ class Vehicle{
   }
 }
 
+function keyPressed(){
+  if(keyCode===32){
+    mode = "stop";
+  }
+  mode = "go";
+}
+
 function stopLight(){
   fill(200,125,0);
   rect(0,0,windowWidth/10, windowHeight/5);
-  if(keyCode===32){
-    for(let f = 0; f<120; f++){
-      mode = "stop";
-      TrafficLight.drawLights();
-    }
-  }
-  else{
-    mode = "go";
-  }
   TrafficLight = new Lights(mode);
   TrafficLight.drawLights();
 }
@@ -160,6 +166,7 @@ class Lights{
       circle(50,50,60);
       fill(1,50,32);
       circle(50, 145, 60);
+      
     }
     else{
       fill(139,0,0);
