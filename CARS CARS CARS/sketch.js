@@ -1,19 +1,16 @@
 // Cars Cars Cars
 // Lucas Boyd
 // 10/21/2024
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
+// This project renders cars on a road going different directions with random positions and colors, along with a stop light that stops all cars when red
 
 let eastbound = [];
 let westbound = [];
 let TrafficLight;
-let mode = "go";
 let timer = 120;
 
-
-function setup() {
+function setup(){ // Sets up canvas, sets up traffic light object and pushes car objects with random parameters into eastbound and westbound lists
   createCanvas(windowWidth, windowHeight);
+  TrafficLight = new Lights("go");
   for(let e=0;e<20;e++){
     eastbound.push(new Vehicle(Math.round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0,windowWidth), random(windowHeight/2+40, windowHeight),"pos",random(1,20)));
   }
@@ -22,7 +19,7 @@ function setup() {
   }
 }
 
-function draw() {
+function draw(){ // Runs every frame, drawing the road, calling the action function and the drawlights function for each car and light respectively
   drawRoad();
   let r = random(1,100);
   for(let e=0;e<eastbound.length;e++){
@@ -31,26 +28,26 @@ function draw() {
   for(let w=0;w<westbound.length;w++){
     westbound[w].action(r);
   }
-  if (mode === "stop"){
+  if (TrafficLight.trafficMode === "stop"){ //Sets timer for 120 frames when light turns red
     timer -= 1;
   }
-  if (timer === 0) {
+  if (timer === 0){
     timer = 120;
-    mode = "go";
+    TrafficLight.trafficMode = "go";
   }
   TrafficLight.drawLights()
 }
 
-function mouseClicked(){
+function mouseClicked(){ //Runs if mouse is clicked, and then checks if shift is held concurrently
   if(keyIsDown(SHIFT) === true){
-    westbound.push(new Vehicle(Math.round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0,windowWidth), random(windowHeight/2-40, 0),"neg",-random(1,20)));
+    westbound.push(new Vehicle(Math.round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0,windowWidth), random(windowHeight/2-40, 0),"neg",-random(1,20))); //Makes new westbound object
   }
   else{
-    eastbound.push(new Vehicle(Math.round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0,windowWidth), random(windowHeight/2+40, windowHeight),"pos",random(1,20)));
+    eastbound.push(new Vehicle(Math.round(random(0,1)),[random(0,255), random(0,255), random(0,255)], random(0,windowWidth), random(windowHeight/2+40, windowHeight),"pos",random(1,20))); //Makes new eastbound object
   }
 }
 
-function drawRoad(){
+function drawRoad(){ // Draws black road background with white lane divider
   background(0);
   for(let i=0;i<windowWidth;i+=60){
     stroke(255);
@@ -61,7 +58,7 @@ function drawRoad(){
   strokeWeight(1);
 }
 
-class Vehicle{
+class Vehicle{ // Creates vehicle class with characteristics determined previously
   constructor(type,color,x,y,direction,xSpeed){
     this.type = type;
     this.color = color;
@@ -70,7 +67,7 @@ class Vehicle{
     this.direction = direction;
     this.xSpeed = xSpeed;
   }
-  display(){
+  display(){ // Draws each car according to type (0 is car, 1 is truck)
     if(this.type===0){
       fill(255);
       rect(this.x+45, this.y-5,10,40);
@@ -84,7 +81,7 @@ class Vehicle{
       rect(this.x-20,this.y,50,30);
     }
   }
-  move(){
+  move(){ // Moves the vehicle eastbound or westbound depending on this.direction
     if(this.direction==="pos"){
       if(this.x<windowWidth){
         this.x+=this.xSpeed;
@@ -101,8 +98,9 @@ class Vehicle{
         this.x=windowWidth;
       }
     }
+  
   }
-  speedUp(){
+  speedUp(){ // Speeds up vehicle when called depending on direction
     if(this.direction==="pos"){
       if(this.xSpeed<15){
         this.xSpeed++;
@@ -114,7 +112,7 @@ class Vehicle{
       }
     }
   }
-  speedDown(){
+  speedDown(){ // Slows down vehicle when called depending on direction
     if(this.direction==="pos"){
       if(this.xSpeed>0){
         this.xSpeed--;
@@ -126,13 +124,14 @@ class Vehicle{
       }
     }
   }
-  changeColor(){
+  changeColor(){ // Changes vehicle color to a random value
     this.color = [random(0,255), random(0,255), random(0,255)];
   }
-  action(r){
-    stopLight();
-    this.move();
-    if(Math.round(r)===50){
+  action(r){ // Calls all functions in the class if applicable
+    if(TrafficLight.trafficMode !== "stop"){
+      this.move();
+    }
+    if(Math.round(r)===50){ // Ensures that there is a 1 percent chance these functions run
       this.speedUp();
       this.speedDown();
       this.changeColor();
@@ -141,32 +140,24 @@ class Vehicle{
   }
 }
 
-function keyPressed(){
+function keyPressed(){ // Function that checks if space is pressed, and changes trafficMode to stop if it is
   if(keyCode===32){
-    mode = "stop";
+    TrafficLight.trafficMode = "stop";
   }
-  mode = "go";
 }
 
-function stopLight(){
-  fill(200,125,0);
-  rect(0,0,windowWidth/10, windowHeight/5);
-  TrafficLight = new Lights(mode);
-  TrafficLight.drawLights();
-}
-
-class Lights{
+class Lights{ // Creates traffic light class which has 2 modes, stop and go
   constructor(trafficMode){
-    print(trafficMode)
     this.trafficMode = trafficMode;
   }
-  drawLights(){
+  drawLights(){ // Draws the lights, whose colors depend on whether the mode is stop and go
+    fill(200,125,0);
+    rect(0,0,100,200 );
     if(this.trafficMode === "stop"){
       fill(255,0,0);
       circle(50,50,60);
       fill(1,50,32);
       circle(50, 145, 60);
-      
     }
     else{
       fill(139,0,0);
