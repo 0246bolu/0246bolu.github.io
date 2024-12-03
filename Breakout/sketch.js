@@ -11,12 +11,17 @@ let grid = [];
 let bricks = [];
 let paddleX;
 let paddleY;
-
+let pos;
+let vel;
+let paddleLine;
+let ballLine;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   brickList();
   rectMode(CENTER);
+  pos = createVector(width/2, height/2);
+  vel = createVector(5,3);
   paddleX = width/2;
   paddleY = height/2 + height/3;
 }
@@ -53,6 +58,8 @@ function draw() {
   } 
   fill(78,193,245);
   rect(paddleX, paddleY, width/NUM_COLS, height/40);
+  paddleLine = [paddleX-((width/NUM_COLS)/2),paddleY-((height/40)/2),paddleX+((width/NUM_COLS)/2),paddleY-((height/40)/2)];
+  line(paddleLine);
 
   if(keyIsDown(RIGHT_ARROW)){
     if(paddleX<width){
@@ -69,6 +76,22 @@ function draw() {
 
 function ball(){
   strokeWeight(0);
-  rect(paddleX, paddleY-((height/40)/2), width/50)
+  fill(255);
+  pos.add(vel);
+  if(ballLine===paddleLine){
+    vel.x *= -1;
+    vel.y *= -1;
+  }
+  if(pos.x<0 || pos.x > width){
+    vel.x *= -1;
+  }
+  if(pos.y<0){
+    vel.y *= -1;
+  }
+  rect(pos.x, pos.y, width/60);
+  ballLine = [pos.x-((width/60)/2), pos.y+((width/60)/2), pos.x+((width/60)/2),  pos.y+((width/60)/2)]
+  line(ballLine);
 }
 
+//  || (pos.x>=(paddleX-(width/NUM_COLS/2))&&pos.x<=(paddleX+(width/NUM_COLS/2)))
+//  || (pos.y===paddleY&&(pos.x>=(paddleX-(width/NUM_COLS/2))&&pos.x<=(paddleX+(width/NUM_COLS/2))))
