@@ -1,39 +1,19 @@
-// Project Title
-// Your Name
-// Date
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
 
 const NUM_ROWS = 8;
 const NUM_COLS = 14;
-let grid = [];
-let bricks = [];
 let paddleX;
 let paddleY;
 let pos;
 let vel;
-let paddleLine;
-let ballLine;
+let bricks = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  brickList();
   rectMode(CENTER);
   pos = createVector(width/2, height/2);
   vel = createVector(5,3);
   paddleX = width/2;
   paddleY = height/2 + height/3;
-}
-
-function brickList(){
-  for(let i = 0; i<NUM_ROWS; i++){
-    for(let j = 0; j<NUM_COLS; j++){
-      grid.push(j);
-    }
-    bricks.push(grid);
-    grid = [];
-  }
 }
 
 function draw() {
@@ -58,9 +38,6 @@ function draw() {
   } 
   fill(78,193,245);
   rect(paddleX, paddleY, width/NUM_COLS, height/40);
-  paddleLine = [paddleX-((width/NUM_COLS)/2),paddleY-((height/40)/2),paddleX+((width/NUM_COLS)/2),paddleY-((height/40)/2)];
-  line(paddleLine);
-
   if(keyIsDown(RIGHT_ARROW)){
     if(paddleX<width){
       paddleX+=7;
@@ -74,13 +51,29 @@ function draw() {
   ball();
 }
 
+class Brick{
+  constructor(posXBrick, posYBrick, color){
+    this.posXBrick = posXBrick;
+    this.posYBrick = posYBrick;
+    this.color = color;
+  }
+}
+
 function ball(){
+  let left = pos.x-width/120;
+  let right = pos.x+width/120;
+  let top = pos.y-width/120;
+  let bottom = pos.y+width/120;
+  let pLeft = paddleX-width/NUM_COLS/2;
+  let pRight = paddleX+width/NUM_COLS/2;
+  let pTop = paddleY-height/40/2;
+  let pBottom = paddleY+height/40/2;
   strokeWeight(0);
   fill(255);
   pos.add(vel);
-  if(ballLine===paddleLine){
-    vel.x *= -1;
+  if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
     vel.y *= -1;
+    pos.y = pTop-height/40/2;
   }
   if(pos.x<0 || pos.x > width){
     vel.x *= -1;
@@ -89,9 +82,4 @@ function ball(){
     vel.y *= -1;
   }
   rect(pos.x, pos.y, width/60);
-  ballLine = [pos.x-((width/60)/2), pos.y+((width/60)/2), pos.x+((width/60)/2),  pos.y+((width/60)/2)]
-  line(ballLine);
 }
-
-//  || (pos.x>=(paddleX-(width/NUM_COLS/2))&&pos.x<=(paddleX+(width/NUM_COLS/2)))
-//  || (pos.y===paddleY&&(pos.x>=(paddleX-(width/NUM_COLS/2))&&pos.x<=(paddleX+(width/NUM_COLS/2))))
