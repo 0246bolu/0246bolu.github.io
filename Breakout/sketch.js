@@ -5,41 +5,43 @@ let paddleY;
 let pos;
 let vel;
 let bricks = [];
-let x = 0;
 
-
-function setup() {
+function setup(){
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
-  pos = createVector(width/2, height/2);
-  vel = createVector(5,3);
+  pos = createVector(random(0,width), height/2);
+  let velSign = Math.round(random());
+  if(velSign===0){
+    vel = createVector(-5,3);
+  }
+  else{
+    vel = createVector(5,3);
+  }
   paddleX = width/2;
   paddleY = height/2 + height/3;
-
   for(let i = 0; i<NUM_ROWS; i++){
     for(let j = 0; j<NUM_COLS; j++){
       if(i===0||i===1){
         fill(255,0,0);
-        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "red", x));
+        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "red"));
       }
       else if(i===2||i===3){
         fill(255,127,0);
-        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "orange", x));
+        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "orange"));
       }
       else if(i===4||i===5){
         fill(0,255,0);
-        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "green", x));
+        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "green"));
       }
       else if(i===6||i===7){
         fill(255,255,0);
-        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "yellow", x));
+        bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "yellow"));
       }
-      x++;
     }
   } 
 }
 
-function draw() {
+function draw(){
   background(0);
   strokeWeight(width/95)
   for(i=0; i<bricks.length; i++){
@@ -61,11 +63,10 @@ function draw() {
 }
 
 class Brick{
-  constructor(posXBrick, posYBrick, color, x){
+  constructor(posXBrick, posYBrick, color){
     this.posXBrick = posXBrick;
     this.posYBrick = posYBrick;
     this.color = color;
-    this.x = x;
   }
   display(){
     if(this.color === "red"){
@@ -84,7 +85,6 @@ class Brick{
       fill(255,255,0);
       rect(this.posXBrick, this.posYBrick, width/NUM_COLS, height/40);
     }
-
     let brickLeft = this.posXBrick-width/NUM_COLS;
     let brickRight = this.posXBrick+width/NUM_COLS;
     let brickTop = this.posYBrick-height/40;
@@ -94,8 +94,16 @@ class Brick{
     let top = pos.y-width/120;
     let bottom = pos.y+width/120;
     if(right>brickLeft && left<brickRight && top<brickBottom && bottom>brickTop){
-      vel.y *= -1;
-      bricks.splice(x,x);
+      if(vel<0){
+        vel.y *= -1;
+        pos.y = brickTop-height/40/2;
+      }
+      else{
+        pos.y = brickBottom+height/40/2;
+        vel.y *= -1;
+      }
+      this.posYBrick = 9000;
+      this.posXBrick = 9000;
     }
   }
 }
