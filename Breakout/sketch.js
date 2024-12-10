@@ -5,6 +5,7 @@ let paddleY;
 let pos;
 let vel;
 let bricks = [];
+let breakCount = 0;
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
@@ -85,25 +86,48 @@ class Brick{
       fill(255,255,0);
       rect(this.posXBrick, this.posYBrick, width/NUM_COLS, height/40);
     }
-    let brickLeft = this.posXBrick-width/NUM_COLS;
-    let brickRight = this.posXBrick+width/NUM_COLS;
-    let brickTop = this.posYBrick-height/40;
-    let brickBottom = this.posYBrick+height/40;
+    let brickLeft = this.posXBrick-width/NUM_COLS+width/95;
+    let brickRight = this.posXBrick+width/NUM_COLS-width/95;
+    let brickTop = this.posYBrick-height/40+width/95;
+    let brickBottom = this.posYBrick+height/40-width/95;
     let left = pos.x-width/120;
     let right = pos.x+width/120;
     let top = pos.y-width/120;
     let bottom = pos.y+width/120;
     if(right>brickLeft && left<brickRight && top<brickBottom && bottom>brickTop){
-      if(vel<0){
-        vel.y *= -1;
-        pos.y = brickTop-height/40/2;
+      if(vel.y>0&&(this.posYBrick-pos.y<=height/40*0.75||pos.y-this.posYBrick>=height/40/2)){
+        if(vel.y>0){
+          if(vel.x<0){
+            pos.x = brickRight+width/60/2;
+          }
+          else{
+            pos.x = brickLeft-width/60/2;
+          }
+          vel.x *= -1;
+        }
+        else{
+          if(vel.x<0){
+            pos.x = brickRight+width/60/2;
+          }
+          else{
+            pos.x = brickLeft-width/60/2;
+          }
+        vel.x *= -1;
+        }
       }
       else{
+        if(vel.y>0){
+          vel.y *= -1;
+          pos.y = brickTop-height/40/2;
+        }
+        else{
         pos.y = brickBottom+height/40/2;
         vel.y *= -1;
+        }
       }
-      this.posYBrick = 9000;
-      this.posXBrick = 9000;
+      breakCount++;
+      this.posYBrick = 9999;
+      this.posXBrick = 9999;
     }
   }
 }
@@ -129,6 +153,12 @@ function ball(){
   }
   if(pos.y<0){
     vel.y *= -1;
+  }
+  if(pos.y>=height){
+    fill(255,0,0);
+    textAlign(CENTER);
+    textSize(height/10);
+    text("GAME OVER", width/2, height/2);
   }
   rect(pos.x, pos.y, width/60);
 }
