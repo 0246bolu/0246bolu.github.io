@@ -9,8 +9,10 @@ let breakCount = 0;
 let timer = 0;
 let timerTen = 0
 let timeMin = 0;
+let timeHigh = 0;
 let paddleSpeed = 7;
 let gameOver = false;
+let newHighScore = false;
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
@@ -42,6 +44,18 @@ function setup(){
       }
     }
   } 
+  if(localStorage.getItem("breakoutHighScore")===null){
+    localStorage.setItem("breakoutHighScore", 0);
+  }
+  else{
+    highScore = localStorage.getItem("breakoutHighScore");
+  }
+  if(localStorage.getItem("breakoutBestTime")===null){
+    localStorage.setItem("breakoutBestTime", 9999);
+  }
+  else{
+    bestTime = localStorage.getItem("breakoutBestTime");
+  }
 }
 
 function draw(){
@@ -52,18 +66,19 @@ function draw(){
   }
   fill(78,193,245);
   rect(paddleX, paddleY, width/NUM_COLS, height/40);
-  if(keyIsDown(RIGHT_ARROW)){
+  if(keyIsDown(RIGHT_ARROW)&&gameOver===false){
     if(paddleX<width){
       paddleX+=paddleSpeed;
     }
   }
-  else if(keyIsDown(LEFT_ARROW)){
+  else if(keyIsDown(LEFT_ARROW)&&gameOver===false){
     if(paddleX>0){
       paddleX-=paddleSpeed;
     }
   }
   if(frameCount%60===0&&breakCount<112&&gameOver===false){
     timer++;
+    timeHigh++;
     if(timer>9){
       timerTen++;
       timer = 0;
@@ -72,29 +87,49 @@ function draw(){
       timeMin++;
       timerTen = 0;
     }
-    paddleSpeed+=0.05;
-    if(vel.x>0){
-      vel.x+=0.05;
-      if(vel.y>0){
-        vel.y+=0.05;
+    if(abs(vel.y)<=10||abs(vel.x)<=12){
+      paddleSpeed+=0.05;
+      if(vel.x>0){
+        vel.x+=0.05;
+        if(vel.y>0){
+          vel.y+=0.05;
+        }
+        else{
+          vel.y-=0.05;
+        }
       }
       else{
-        vel.y-=0.05;
-      }
+        vel.x-=0.05;
+        if(vel.y>0){
+          vel.y+=0.05;
+        }
+        else{
+          vel.y-=0.05;
+        }
+      } 
     }
-    else{
-      vel.x-=0.05;
-      if(vel.y>0){
-        vel.y+=0.05;
-      }
-      else{
-        vel.y-=0.05;
-      }
-    }
+    
+  }
+  if(breakCount>localStorage.getItem("breakoutHighScore")){
+    localStorage.setItem("breakoutHighScore", breakCount);
+    localStorage.setItem("breakoutBestTime", timeHigh);
+    textSize(height/12);
+    newHighScore = true;
+  }
+  else if(breakCount>=localStorage.getItem("breakoutHighScore")&&timeHigh<localStorage.getItem("breakoutBestTime")){
+    localStorage.setItem("breakoutBestTime", timeHigh);
+    newHighScore = true;
   }
   fill(255);
   textSize(height/12);
   text(timeMin+":"+timerTen+timer, width/2, height/13);
+  textSize(height/35)
+  if(newHighScore===true&&localStorage.getItem("breakoutHighScore")>0){
+    fill(0,255,0);
+    text("NEW HIGH SCORE!", width-width/5, height/13-height/25);
+    fill(255);
+  }
+  text("High Score: "+localStorage.getItem("breakoutHighScore")+" in "+localStorage.getItem("breakoutBestTime"), width-width/5, height/13);
   ball();
 }
 
@@ -178,8 +213,19 @@ function ball(){
   fill(255);
   pos.add(vel);
   if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
+    if(vel.y<0&&(paddleY-pos.y>=height/40*0.75||pos.y-paddleY<=height/40/2)){
+      if(vel.x<0){
+        pos.x = pRight+width/60/2;
+      }
+      else{
+        pos.x = pLeft-width/60/2;
+      }
+      vel.x *= -1;
+    }
+    else{
     vel.y *= -1;
     pos.y = pTop-height/40/2;
+    }
   }
   if(pos.x<0 || pos.x > width){
     vel.x *= -1;
@@ -197,6 +243,7 @@ function ball(){
     fill(0,255,0);
     textSize(height/10);
     text("YOU WIN", width/2, height/2);
+    gameOver = true;
   }
   rect(pos.x, pos.y, width/60);
   textSize(height/12);
