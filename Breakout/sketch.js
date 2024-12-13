@@ -13,9 +13,13 @@ let timeHigh = 0;
 let paddleSpeed = 7;
 let gameOver = false;
 let newHighScore = false;
+let highScoreSec = 0;
+let highScoreTen = 0;
+let highScoreMin = 0;
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
+  frameRate = 120;
   rectMode(CENTER);
   textAlign(CENTER);
   pos = createVector(random(0,width), height/2);
@@ -66,12 +70,12 @@ function draw(){
   }
   fill(78,193,245);
   rect(paddleX, paddleY, width/NUM_COLS, height/40);
-  if(keyIsDown(RIGHT_ARROW)&&gameOver===false){
+  if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))&&gameOver===false){
     if(paddleX<width){
       paddleX+=paddleSpeed;
     }
   }
-  else if(keyIsDown(LEFT_ARROW)&&gameOver===false){
+  else if((keyIsDown(LEFT_ARROW)||keyIsDown(65))&&gameOver===false){
     if(paddleX>0){
       paddleX-=paddleSpeed;
     }
@@ -87,7 +91,7 @@ function draw(){
       timeMin++;
       timerTen = 0;
     }
-    if(abs(vel.y)<=10||abs(vel.x)<=12){
+    if(abs(vel.y)<=5||abs(vel.x)<=7){
       paddleSpeed+=0.05;
       if(vel.x>0){
         vel.x+=0.05;
@@ -108,7 +112,6 @@ function draw(){
         }
       } 
     }
-    
   }
   if(breakCount>localStorage.getItem("breakoutHighScore")){
     localStorage.setItem("breakoutHighScore", breakCount);
@@ -129,7 +132,16 @@ function draw(){
     text("NEW HIGH SCORE!", width-width/5, height/13-height/25);
     fill(255);
   }
-  text("High Score: "+localStorage.getItem("breakoutHighScore")+" in "+localStorage.getItem("breakoutBestTime"), width-width/5, height/13);
+  if(localStorage.getItem("breakoutBestTime")/60>=1){
+    highScoreMin = Math.floor(localStorage.getItem("breakoutBestTime")/60);
+  }
+  highScoreSec = localStorage.getItem("breakoutBestTime")-(highScoreMin*60)
+  if(highScoreSec>=10){
+    text("High Score: "+localStorage.getItem("breakoutHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13);
+  }
+  else{
+    text("High Score: "+localStorage.getItem("breakoutHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13);
+  }
   ball();
 }
 
@@ -166,19 +178,19 @@ class Brick{
     let bottom = pos.y+width/120;
     if(right>brickLeft && left<brickRight && top<brickBottom && bottom>brickTop){
       if(vel.y>0&&(this.posYBrick-pos.y<=height/40*0.75||pos.y-this.posYBrick>=height/40/2)){
-          if(vel.x<0){
+          if(vel.x<0&&(left-brickRight)<width/120){
             pos.x = brickRight+width/60/2;
           }
-          else{
+          else if((right-brickLeft)<width/120){
             pos.x = brickLeft-width/60/2;
           }
           vel.x *= -1;
       }
       else if(vel.y<0&&(this.posYBrick-pos.y>=height/40*0.75||pos.y-this.posYBrick<=height/40/2)){
-        if(vel.x<0){
+        if(vel.x<0&&(left-brickRight)<width/120){
           pos.x = brickRight+width/60/2;
         }
-        else{
+        else if((right-brickLeft)<width/120){
           pos.x = brickLeft-width/60/2;
         }
         vel.x *= -1;
@@ -213,18 +225,19 @@ function ball(){
   fill(255);
   pos.add(vel);
   if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
-    if(vel.y<0&&(paddleY-pos.y>=height/40*0.75||pos.y-paddleY<=height/40/2)){
-      if(vel.x<0){
-        pos.x = pRight+width/60/2;
+    if(paddleY-pos.y<=height/90){
+      if(vel.x<0&&(left-pRight)<width/120/2){
+        pos.x = pRight+width/60;
       }
-      else{
-        pos.x = pLeft-width/60/2;
+      else if(vel.x>0&&(right-pLeft)<width/120/2){
+        pos.x = pLeft-width/60;
       }
+      vel.y *= -1;
       vel.x *= -1;
     }
     else{
-    vel.y *= -1;
-    pos.y = pTop-height/40/2;
+      vel.y *= -1;
+      pos.y = pTop-height/40/2;
     }
   }
   if(pos.x<0 || pos.x > width){
