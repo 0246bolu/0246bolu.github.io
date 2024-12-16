@@ -64,7 +64,7 @@ function setup(){
 
 function draw(){
   background(0);
-  strokeWeight(width/95)
+  strokeWeight(height/95)
   for(i=0; i<bricks.length; i++){
     bricks[i].display();
   }
@@ -225,15 +225,15 @@ function ball(){
   fill(255);
   pos.add(vel);
   if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
-    if(paddleY-pos.y<=height/90){
-      if(vel.x<0&&(left-pRight)<width/120/2){
+    if(vel.x<0&&(left+pRight)<width/120/5){
         pos.x = pRight+width/60;
-      }
-      else if(vel.x>0&&(right-pLeft)<width/120/2){
+        vel.y *= -1;
+        vel.x *= -1;    
+    }
+    else if(vel.x>0&&(right-pLeft)<width/120/5){
         pos.x = pLeft-width/60;
-      }
-      vel.y *= -1;
-      vel.x *= -1;
+        vel.y *= -1;
+        vel.x *= -1;    
     }
     else{
       vel.y *= -1;
@@ -258,7 +258,7 @@ function ball(){
     text("YOU WIN", width/2, height/2);
     gameOver = true;
   }
-  rect(pos.x, pos.y, width/60);
+  rect(pos.x, pos.y, height/60);
   textSize(height/12);
   text(breakCount, width/13, height/13);
 }
