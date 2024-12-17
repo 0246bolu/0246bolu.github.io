@@ -16,6 +16,17 @@ let newHighScore = false;
 let highScoreSec = 0;
 let highScoreTen = 0;
 let highScoreMin = 0;
+let loseSound;
+let breakSound;
+let winSound;
+let bounceSound;
+
+function preload(){
+  loseSound = loadSound("assets/8-bit-video-game-fail-version-2-145478.mp3");
+  breakSound = loadSound("assets/8-bit-video-game-points-version-1-145826.mp3");
+  winSound = loadSound("assets/8-bit-video-game-win-level-sound-version-1-145827.mp3");
+  bounceSound = loadSound("assets/impact-sound-effect-8-bit-retro-151796.mp3");
+}
 
 function setup(){
   createCanvas(windowWidth, windowHeight);
@@ -208,6 +219,7 @@ class Brick{
       breakCount++;
       this.posYBrick = 9999;
       this.posXBrick = 9999;
+      breakSound.play();
     }
   }
 }
@@ -225,12 +237,12 @@ function ball(){
   fill(255);
   pos.add(vel);
   if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
-    if(vel.x<0&&(left+pRight)<width/120/5){
+    if(vel.x<0&&(pos.y-paddleY)<=height/40*0.75){
         pos.x = pRight+width/60;
         vel.y *= -1;
         vel.x *= -1;    
     }
-    else if(vel.x>0&&(right-pLeft)<width/120/5){
+    else if(vel.x>0&&(pos.y-paddleY)<=height/40*0.75){
         pos.x = pLeft-width/60;
         vel.y *= -1;
         vel.x *= -1;    
@@ -239,23 +251,28 @@ function ball(){
       vel.y *= -1;
       pos.y = pTop-height/40/2;
     }
+    bounceSound.play();
   }
   if(pos.x<0 || pos.x > width){
     vel.x *= -1;
+    bounceSound.play();
   }
   if(pos.y<0){
     vel.y *= -1;
+    bounceSound.play();
   }
   if(pos.y>=height&&breakCount<112){
     fill(255,0,0);
     textSize(height/10);
     text("GAME OVER", width/2, height/2);
+    loseSound.play();
     gameOver = true;
   }
   if(breakCount===112){
     fill(0,255,0);
     textSize(height/10);
     text("YOU WIN", width/2, height/2);
+    winSound.play();
     gameOver = true;
   }
   rect(pos.x, pos.y, height/60);
