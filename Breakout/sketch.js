@@ -20,6 +20,8 @@ let loseSound;
 let breakSound;
 let winSound;
 let bounceSound;
+let s = 0;
+let l = 0;
 
 function preload(){
   loseSound = loadSound("assets/8-bit-video-game-fail-version-2-145478.mp3");
@@ -188,6 +190,7 @@ class Brick{
     let top = pos.y-width/120;
     let bottom = pos.y+width/120;
     if(right>brickLeft && left<brickRight && top<brickBottom && bottom>brickTop){
+      breakSound.play();
       if(vel.y>0&&(this.posYBrick-pos.y<=height/40*0.75||pos.y-this.posYBrick>=height/40/2)){
           if(vel.x<0&&(left-brickRight)<width/120){
             pos.x = brickRight+width/60/2;
@@ -219,7 +222,6 @@ class Brick{
       breakCount++;
       this.posYBrick = 9999;
       this.posXBrick = 9999;
-      breakSound.play();
     }
   }
 }
@@ -237,15 +239,19 @@ function ball(){
   fill(255);
   pos.add(vel);
   if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
-    if(vel.x<0&&(pos.y-paddleY)<=height/40*0.75){
+    if((paddleY-pos.y)<=height/80){
+      if((pLeft-left)>=(pRight-right)){ 
         pos.x = pRight+width/60;
+        pos.y = paddleY;
         vel.y *= -1;
         vel.x *= -1;    
-    }
-    else if(vel.x>0&&(pos.y-paddleY)<=height/40*0.75){
+      }
+      else{
         pos.x = pLeft-width/60;
+        pos.y = paddleY;
         vel.y *= -1;
-        vel.x *= -1;    
+        vel.x *= -1;   
+      }
     }
     else{
       vel.y *= -1;
@@ -265,14 +271,21 @@ function ball(){
     fill(255,0,0);
     textSize(height/10);
     text("GAME OVER", width/2, height/2);
-    loseSound.play();
+    let x = 0;
+    l++;
+    if(l<=1){
+      loseSound.play();
+    }
     gameOver = true;
   }
   if(breakCount===112){
     fill(0,255,0);
     textSize(height/10);
     text("YOU WIN", width/2, height/2);
-    winSound.play();
+    s++;
+    if(s<=1){
+      winSound.play();
+    }
     gameOver = true;
   }
   rect(pos.x, pos.y, height/60);
