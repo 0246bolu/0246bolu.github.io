@@ -31,8 +31,7 @@ function preload(){
 }
 
 function setup(){
-  createCanvas(windowWidth, windowHeight);
-  frameRate = 120;
+  createCanvas(950,948);
   rectMode(CENTER);
   textAlign(CENTER);
   pos = createVector(random(0,width), height/2);
@@ -240,17 +239,31 @@ function ball(){
   pos.add(vel);
   if(right>pLeft && left<pRight && top<pBottom && bottom>pTop){
     if((paddleY-pos.y)<=height/80){
-      if((pLeft-left)>=(pRight-right)){ 
+      if(right>=pRight){ 
         pos.x = pRight+width/60;
-        pos.y = paddleY;
+        // pos.y = paddleY;
         vel.y *= -1;
-        vel.x *= -1;    
+        vel.x *= -1;
+        if(pos.x>=width){
+          pos.y = pTop-height/40/2;
+          vel.y = abs(vel.y);
+        }
+        if(keyIsDown(RIGHT_ARROW)||keyIsDown(68)){
+          pos.y = pTop-height/80;
+        }
       }
       else{
         pos.x = pLeft-width/60;
-        pos.y = paddleY;
+        // pos.y = paddleY;
         vel.y *= -1;
         vel.x *= -1;   
+        if(pos.x<=0){
+          pos.y = pTop-height/40/2;
+          vel.y = abs(vel.y);
+        }  
+        if(keyIsDown(LEFT_ARROW)||keyIsDown(65)){
+          pos.y = pTop-height/80;
+        } 
       }
     }
     else{
@@ -259,7 +272,13 @@ function ball(){
     }
     bounceSound.play();
   }
-  if(pos.x<0 || pos.x > width){
+  if(pos.x<=0){
+    pos.x = 0;
+    vel.x *= -1;
+    bounceSound.play();
+  }
+  if(pos.x>=width){
+    pos.x = width;
     vel.x *= -1;
     bounceSound.play();
   }
@@ -271,7 +290,6 @@ function ball(){
     fill(255,0,0);
     textSize(height/10);
     text("GAME OVER", width/2, height/2);
-    let x = 0;
     l++;
     if(l<=1){
       loseSound.play();
