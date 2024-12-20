@@ -241,7 +241,6 @@ function ball(){
     if((paddleY-pos.y)<=height/80){
       if(right>=pRight){ 
         pos.x = pRight+width/60;
-        // pos.y = paddleY;
         vel.y *= -1;
         vel.x *= -1;
         if(pos.x>=width){
@@ -254,7 +253,6 @@ function ball(){
       }
       else{
         pos.x = pLeft-width/60;
-        // pos.y = paddleY;
         vel.y *= -1;
         vel.x *= -1;   
         if(pos.x<=0){
