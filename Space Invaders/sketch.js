@@ -5,6 +5,7 @@ let alien2anim1;
 let alien2anim2;
 let alien3anim1;
 let alien3anim2;
+let alienDeath;
 let timer = 0;
 let alienFirstAnim = true;
 let alienVel = 1;
@@ -14,9 +15,12 @@ let shipSpeed = 7;
 let shipY;
 let shipX;
 let pLaserList = [];
-pLaserShoot = true;
+let aLaserList = [];
+let pLaserShoot = true;
 let pLaserX;
 let pLaserY;
+let laserGen; 
+let gameOver = false;
 
 
 function preload(){
@@ -26,6 +30,8 @@ function preload(){
   alien2anim2 = loadImage("assets/alien2anim2.png");
   alien3anim1 = loadImage("assets/alien3anim1.png");
   alien3anim2 = loadImage("assets/alien3anim2.png");
+  alienDeath = loadImage("assets/alienDeathExplos.png");
+  deadShip = loadImage("assets/playerWreckage.png");
 }
 
 function setup() {
@@ -45,61 +51,88 @@ function draw() {
   rectMode(CENTER);
   background(0);
   fill(255);
-  rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
-  rect(shipX, shipY-height/80, 10, 25);
-  if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))){
-    if(shipX<width){
-      shipX+=shipSpeed;
+  if(gameOver===false){
+    rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
+    rect(shipX, shipY-height/80, 10, 25);
+    if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))){
+      if(shipX<width){
+        shipX+=shipSpeed;
+      }
+    }
+    else if((keyIsDown(LEFT_ARROW)||keyIsDown(65))){
+      if(shipX>0){
+        shipX-=shipSpeed;
+      }
+    }
+    if(drop===true){
+      for(let i=0;i<alienList.length;i++){
+        alienList[i].posY += 15;
+      }
+      drop = false;
+    }
+    if(frameCount%60===0){
+      timer++;
+    }
+    if(timer%2===0){
+      alienFirstAnim = true;
+    }
+    else{
+      alienFirstAnim = false;
+    }
+    if(frameCount%15===0){
+      if((keyIsDown(UP_ARROW)||keyIsDown(87))&&pLaserShoot===true){
+        pLaserList.push(new pLaser(shipX,shipY-height/80-25));
+      }
+    }
+    for(let i=0;i<pLaserList.length;i++){
+      pLaserList[i].displayPLaser();
+    }
+    for(let i=0;i<pLaserList.length;i++){
+      let laser = pLaserList[i];
+      for(let j=0;j<alienList.length;j++){
+        let alien = alienList[j];
+        let alienLeft = alien.posX - alien1anim1.width/4;
+        let alienRight = alien.posX + alien1anim1.width/4
+        let alienTop = alien.posY - alien1anim1.height/4
+        let alienBottom = alien.posY + alien1anim1.height/4
+        if(laser.pLaserX>alienLeft&&laser.pLaserX<alienRight&&laser.pLaserY>alienTop&&laser.pLaserY<alienBottom){
+          alienList.splice(j,1);
+          pLaserList.splice(i,1);
+          image(alienDeath, alien.posX, alien.posY, alien1anim1.width/2, alien1anim1.width/2);
+        }
+      }
+    }
+    for(let i=0;i<aLaserList.length;i++){
+      let laser = aLaserList[i];
+      if(laser.aLaserX>shipX-width/14&&laser.aLaserX<shipX+width/14&&laser.aLaserY>shipY-height/40/2-25&&laser.aLaserY<shipY+height/80){
+        aLaserList.splice(i,1);
+        gameOver = true;
+      }
+    }
+    laserGen = Math.round(random(1,100));
+    if(laserGen<=3){
+      let laserAlien = alienList[Math.round(random(0,alienList.length-1))];
+      let laserAlienX = laserAlien.posX;
+      let laserAlienY = laserAlien.posY;
+      aLaserList.push(new aLaser(laserAlienX,laserAlienY));
+    }
+    for(let i=0;i<aLaserList.length;i++){
+      aLaserList[i].displayALaser();
     }
   }
-  else if((keyIsDown(LEFT_ARROW)||keyIsDown(65))){
-    if(shipX>0){
-      shipX-=shipSpeed;
-    }
+  else{
+    image(deadShip,shipX,shipY,width/14,height/40);
+    textAlign(CENTER);
+    textSize(50);
+    text("GAME OVER", width/2, height/2);
   }
   for(let i=0;i<alienList.length;i++){
     alienList[i].displayAliens();
   }
-  if(drop===true){
-    for(let i=0;i<alienList.length;i++){
-      alienList[i].posY += 15;
-    }
-    drop = false;
-  }
-  if(frameCount%60===0){
-    timer++;
-  }
-  if(timer%2===0){
-    alienFirstAnim = true;
-  }
-  else{
-    alienFirstAnim = false;
-  }
-  if(frameCount%15===0){
-    if((keyIsDown(UP_ARROW)||keyIsDown(87))&&pLaserShoot===true){
-      pLaserList.push(new pLaser(shipX,shipY-height/80-25));
-    }
-  }
-  for(let i=0;i<pLaserList.length;i++){
-    pLaserList[i].displayPLaser();
-  }
-  for(let i = 0; i<pLaserList.length; i++){
-    let laser = pLaserList[i];
-    for(let j = 0; j<alienList.length; j++){
-      let alien = alienList[j];
-      let alienLeft = alien.posX - alien1anim1.width/4;
-      let alienRight = alien.posX + alien1anim1.width/4
-      let alienTop = alien.posY - alien1anim1.height/4
-      let alienBottom = alien.posY + alien1anim1.height/4
-      if(laser.pLaserX>alienLeft&&laser.pLaserX<alienRight&&laser.pLaserY>alienTop&&laser.pLaserY<alienBottom){
-        alienList.splice(j,1);
-        pLaserList.splice(i,1);
-      }
-    }
-  }
 }
- function keyReleased(){
-  if((keyCode===UP_ARROW)||(keyCode===87)){
+
+function keyReleased(){
+  if((keyCode===UP_ARROW)||(keyCode===87)&&gameOver===false){
     pLaserList.push(new pLaser(shipX,shipY-height/80-25));
   }
  }
@@ -159,6 +192,15 @@ class pLaser{
     rect(this.pLaserX,this.pLaserY, 10, 35);
     this.pLaserY-=15;
   }
-  pLaserY = this.pLaserY;
-  pLaserX = this.pLaserX;
+}
+
+class aLaser{
+  constructor(aLaserX, aLaserY){
+    this.aLaserX = aLaserX;
+    this.aLaserY = aLaserY;
+  }
+  displayALaser(){
+    rect(this.aLaserX,this.aLaserY, 10, 35);
+    this.aLaserY+=15;
+  }
 }
