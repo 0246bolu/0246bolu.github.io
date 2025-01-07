@@ -32,6 +32,10 @@ let bestTime;
 let newHighScore = false;
 let highScoreMin = 0;
 let highScoreSec = 0;
+let explosionSound;
+let alienSound;
+let alienKilledSound;
+let shootSound;
 
 function preload(){
   alien1anim1 = loadImage("assets/alien1anim1.png");
@@ -42,12 +46,18 @@ function preload(){
   alien3anim2 = loadImage("assets/alien3anim2.png");
   alienDeath = loadImage("assets/alienDeathExplos.png");
   deadShip = loadImage("assets/playerWreckage.png");
+  explosionSound = loadSound("assets/explosion.wav");
+  alienSound = loadSound("assets/fastinvader1.wav");
+  alienKilledSound = loadSound("assets/invaderKilled.wav");
+  shootSound = loadSound("assets/shoot.wav");
 }
 
 function setup() {
   createCanvas(950, 948);
   imageMode(CENTER);
   noStroke();
+  rectMode(CENTER);
+  textAlign(CENTER);
   shipX = width/2;
   shipY = height/2 + height/3;
   for(let i=0;i<5;i++){
@@ -71,8 +81,6 @@ function setup() {
 
 function draw(){
   background(0);
-  rectMode(CENTER);
-  textAlign(CENTER);
   fill(255);
   if(gameOver===false){
     rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
@@ -118,6 +126,7 @@ function draw(){
     if(frameCount%15===0){
       if((keyIsDown(UP_ARROW)||keyIsDown(87))&&pLaserShoot===true){
         pLaserList.push(new pLaser(shipX,shipY-height/80-25));
+        shootSound.play();
       }
     }
     for(let i=0;i<pLaserList.length;i++){
@@ -135,6 +144,7 @@ function draw(){
           alienList.splice(j,1);
           pLaserList.splice(i,1);
           killCount++;
+          alienKilledSound.play();
           image(alienDeath, alien.posX, alien.posY, alien1anim1.width/2, alien1anim1.width/2);
         }
       }
@@ -143,6 +153,7 @@ function draw(){
       let laser = aLaserList[i];
       if(laser.aLaserX>shipX-width/14&&laser.aLaserX<shipX+width/14&&laser.aLaserY>shipY-height/40/2-25&&laser.aLaserY<shipY+height/80){
         aLaserList.splice(i,1);
+        explosionSound.play();
         gameOver = true;
       }
     }
@@ -184,7 +195,7 @@ function draw(){
     }
     fill(255);
     textSize(height/12);
-    text(timeMin+":"+timerTen+timeHigh, width/2, height/13);
+    text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10);
     textSize(height/35)
     if(newHighScore===true&&localStorage.getItem("spaceInvadersHighScore")>0){
       fill(0,255,0);
@@ -196,20 +207,21 @@ function draw(){
     }
     highScoreSec = localStorage.getItem("spaceInvadersBestTime")-(highScoreMin*60)
     if(highScoreSec>=10){
-      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13);
+      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10);
     }
     else{
-      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13);
+      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13-10);
     }
   }
   else{
     for(let i=0;i<alienList.length;i++){
       alienList[i].displayAliens();
     }
-    textAlign(CENTER);
+    textSize(30);
+    text("PRESS SPACE TO RESTART", width/2, height/2+90);
     textSize(50);
     if(win===false){
-      image(deadShip,shipX,shipY,width/14,height/40);
+      image(deadShip,shipX,shipY,width/10,height/30);
       fill(255,0,0);
       text("GAME OVER", width/2, height/2);
     }
@@ -222,27 +234,70 @@ function draw(){
     }
     fill(255);
     textSize(height/12);
-    text(timeMin+":"+timerTen+timeHigh, width/2, height/13);
+    text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10);
     textSize(height/35);
     if(highScoreSec>=10){
-      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13);
+      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10);
     }
     else{
-      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13);
+      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13-10);
     }
     if(newHighScore===true&&localStorage.getItem("spaceInvadersHighScore")>0){
       fill(0,255,0);
-      text("NEW HIGH SCORE!", width-width/5, height/13-height/25);
+      text("NEW HIGH SCORE!", width-width/5, height/13-height/25-10);
       fill(255);
+    }
+    if(keyIsDown(32)){
+      alienList = [];
+      timer = 0;
+      timerTen = 0
+      timeMin = 0;
+      timeHigh = 0;
+      alienFirstAnim = true;
+      alienVel = 1;
+      right = true;
+      drop = false;
+      shipSpeed = 7;
+      pLaserList = [];
+      aLaserList = [];
+      pLaserShoot = true;
+      gameOver = false;
+      lowestAlien = 0;
+      killCount = 0;
+      win = false;
+      newHighScore = false;
+      highScoreMin = 0;
+      highScoreSec = 0;
+      shipX = width/2;
+      shipY = height/2 + height/3;
+      for(let i=0;i<5;i++){
+        for(let j=0;j<12;j++){
+            alienList.push(new Alien(1.5*j/2*width/12+width/28, 2.5*i*height/38+height/10, i))
+        }
+      }
+      if(localStorage.getItem("spaceInvadersHighScore")===null){
+        localStorage.setItem("spaceInvadersHighScore", 0);
+      }
+      else{
+        highScore = localStorage.getItem("spaceInvadersHighScore");
+      }
+      if(localStorage.getItem("spaceInvadersBestTime")===null){
+        localStorage.setItem("spaceInvadersBestTime", 9999);
+      }
+      else{
+        bestTime = localStorage.getItem("spaceInvadersBestTime");
+      }
+      gameOver = false;
     }
   }
   textSize(height/12);
-  text(killCount, width/13, height/13);
+  text(killCount, width/13, height/13-10);
 }
 
 function keyReleased(){
   if((keyCode===UP_ARROW)||(keyCode===87)&&gameOver===false){
     pLaserList.push(new pLaser(shipX,shipY-height/80-25));
+    shootSound.play();
   }
  }
 
@@ -277,6 +332,9 @@ class Alien{
     }
     if(right===true&&gameOver===false){
       this.posX+=alienVel;
+      // if(alienSound.isPlaying()===false){
+      //   alienSound.play();
+      // }
       if(this.posX>width-alien1anim2.width/2){
         right = false;
         drop = true;
