@@ -36,6 +36,10 @@ let explosionSound;
 let alienSound;
 let alienKilledSound;
 let shootSound;
+let barrierList = [];
+let brickList = [];
+let barrierX;
+let barrierY;
 
 function preload(){
   alien1anim1 = loadImage("assets/alien1anim1.png");
@@ -65,6 +69,12 @@ function setup() {
         alienList.push(new Alien(1.5*j/2*width/12+width/28, 2.5*i*height/38+height/10, i))
     }
   }
+  for(let i=0;i<4;i++){
+    barrierList.push(new Barrier(i+50,height/2-height/3));
+  }
+  for(let i=0;i<barrierList.length;i++){
+    barrierList[i].makeBricks();
+  }
   if(localStorage.getItem("spaceInvadersHighScore")===null){
     localStorage.setItem("spaceInvadersHighScore", 0);
   }
@@ -83,6 +93,9 @@ function draw(){
   background(0);
   fill(255);
   if(gameOver===false){
+    for(let i=0;i<brickList.length;i++){
+      brickList[i].displayBricks();
+    }
     rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
     rect(shipX, shipY-height/80, 10, 25);
     if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))){
@@ -248,46 +261,7 @@ function draw(){
       fill(255);
     }
     if(keyIsDown(32)){
-      alienList = [];
-      timer = 0;
-      timerTen = 0
-      timeMin = 0;
-      timeHigh = 0;
-      alienFirstAnim = true;
-      alienVel = 1;
-      right = true;
-      drop = false;
-      shipSpeed = 7;
-      pLaserList = [];
-      aLaserList = [];
-      pLaserShoot = true;
-      gameOver = false;
-      lowestAlien = 0;
-      killCount = 0;
-      win = false;
-      newHighScore = false;
-      highScoreMin = 0;
-      highScoreSec = 0;
-      shipX = width/2;
-      shipY = height/2 + height/3;
-      for(let i=0;i<5;i++){
-        for(let j=0;j<12;j++){
-            alienList.push(new Alien(1.5*j/2*width/12+width/28, 2.5*i*height/38+height/10, i))
-        }
-      }
-      if(localStorage.getItem("spaceInvadersHighScore")===null){
-        localStorage.setItem("spaceInvadersHighScore", 0);
-      }
-      else{
-        highScore = localStorage.getItem("spaceInvadersHighScore");
-      }
-      if(localStorage.getItem("spaceInvadersBestTime")===null){
-        localStorage.setItem("spaceInvadersBestTime", 9999);
-      }
-      else{
-        bestTime = localStorage.getItem("spaceInvadersBestTime");
-      }
-      gameOver = false;
+      location.reload();
     }
   }
   textSize(height/12);
@@ -377,11 +351,38 @@ class Barrier{
     this.barrierX = barrierX;
     this.barrierY = barrierY;
   }
-  displayBarrier(){
-
+  makeBricks(){
+    for(let i=0;i<14;i++){
+      brickList.push(new BarrierBrick(i))
+    }
   }
 }
 
 class BarrierBrick{
-
+  constructor(position){
+    this.position = position;
+  }
+  displayBricks(){
+    if(this.position===1){
+      rect(barrierX-3.5*20,barrierY+1.5*70,20,70);
+    }
+    else if(this.position===2){
+      rect(barrierX-2.5*20,barrierY+1.5*70,20,70);
+    }
+    else if(this.position===3){
+      rect(barrierX-2.5*20,barrierY+0.5*70,20,70);
+    }
+    else if(this.position===4){
+      rect(barrierX-1.5*20,barrierY+1*70,20,70);
+    }
+    else if(this.position===5){
+      rect(barrierX-1.5*20,barrierY,20,70);
+    }
+    else if(this.position===6){
+      rect(barrierX-0.5*20,barrierY+0.5*70,20,70);
+    }
+    else if(this.position===7){
+      rect(barrierX-0.5*20,barrierY-0.5*70,20,70);
+    }
+  }
 }

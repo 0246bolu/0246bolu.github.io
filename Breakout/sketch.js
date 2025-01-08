@@ -77,6 +77,13 @@ function setup(){
 function draw(){
   background(0);
   strokeWeight(height/95)
+  if(gameOver===true){
+    textSize(30);
+    text("PRESS SPACE TO RESTART", width/2, height/2+90);
+    if(keyIsDown(32)){
+      location.reload();
+    }
+  }
   for(i=0; i<bricks.length; i++){
     bricks[i].display();
   }
@@ -124,61 +131,6 @@ function draw(){
         }
       } 
     }
-    // if(keyIsDown(32)){
-    //   bricks = [];
-    //   breakCount = 0;
-    //   timer = 0;
-    //   timerTen = 0
-    //   timeMin = 0;
-    //   timeHigh = 0;
-    //   paddleSpeed = 7;
-    //   gameOver = false;
-    //   newHighScore = false;
-    //   highScoreSec = 0;
-    //   highScoreTen = 0;
-    //   highScoreMin = 0;
-    //   s = 0;
-    //   l = 0;
-    //   pos = createVector(random(0,width), height/2);
-    //   velSign = Math.round(random());
-    //   if(velSign===0){
-    //     vel = createVector(-5,3);
-    //   }
-    //   else{
-    //     vel = createVector(5,3);
-    //   }
-    //   paddleX = width/2;
-    //   paddleY = height/2 + height/3;
-    //   for(let i = 0; i<NUM_ROWS; i++){
-    //     for(let j = 0; j<NUM_COLS; j++){
-    //       if(i===0||i===1){
-    //         bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "red"));
-    //       }
-    //       else if(i===2||i===3){
-    //         bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "orange"));
-    //       }
-    //       else if(i===4||i===5){
-    //         bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "green"));
-    //       }
-    //       else if(i===6||i===7){
-    //         bricks.push(new Brick(j*width/NUM_COLS+width/28, i*height/38+height/10, "yellow"));
-    //       }
-    //     }
-    //   } 
-    //   if(localStorage.getItem("breakoutHighScore")===null){
-    //     localStorage.setItem("breakoutHighScore", 0);
-    //   }
-    //   else{
-    //     highScore = localStorage.getItem("breakoutHighScore");
-    //   }
-    //   if(localStorage.getItem("breakoutBestTime")===null){
-    //     localStorage.setItem("breakoutBestTime", 9999);
-    //   }
-    //   else{
-    //     bestTime = localStorage.getItem("breakoutBestTime");
-    //   }
-    //   gameOver===false;
-    // }
   }
   if(breakCount>localStorage.getItem("breakoutHighScore")){
     localStorage.setItem("breakoutHighScore", breakCount);
