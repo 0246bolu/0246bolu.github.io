@@ -64,13 +64,15 @@ function setup() {
   textAlign(CENTER);
   shipX = width/2;
   shipY = height/2 + height/3;
+  barrierX = width/2;
+  barrierY = height/2;
   for(let i=0;i<5;i++){
     for(let j=0;j<12;j++){
         alienList.push(new Alien(1.5*j/2*width/12+width/28, 2.5*i*height/38+height/10, i))
     }
   }
   for(let i=0;i<4;i++){
-    barrierList.push(new Barrier(i+50,height/2-height/3));
+    barrierList.push(new Barrier(120+i*237,height/2+height/5, i));
   }
   for(let i=0;i<barrierList.length;i++){
     barrierList[i].makeBricks();
@@ -93,9 +95,6 @@ function draw(){
   background(0);
   fill(255);
   if(gameOver===false){
-    for(let i=0;i<brickList.length;i++){
-      brickList[i].displayBricks();
-    }
     rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
     rect(shipX, shipY-height/80, 10, 25);
     if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))){
@@ -170,6 +169,34 @@ function draw(){
         gameOver = true;
       }
     }
+    for(let i=0; i<pLaserList.length; i++){
+      let laser = pLaserList[i];
+      for(let j=0; j<brickList.length; j++){
+        let brick = brickList[j];
+        let brickLeft = brick.brickX - 10;
+        let brickRight = brick.brickX + 10;
+        let brickTop = brick.brickY - 15;
+        let brickBottom = brick.brickY + 15;
+        if(laser.pLaserX>brickLeft&&laser.pLaserX<brickRight&&laser.pLaserY>brickTop&&laser.pLaserY<brickBottom){
+          brickList.splice(j,1);
+          pLaserList.splice(i,1);
+        }
+      }
+    }
+    for(let i=0; i<aLaserList.length; i++){
+      let laser = aLaserList[i];
+      for(let j=0; j<brickList.length; j++){
+        let brick = brickList[j];
+        let brickLeft = brick.brickX - 10;
+        let brickRight = brick.brickX + 10;
+        let brickTop = brick.brickY - 15;
+        let brickBottom = brick.brickY + 15;
+        if(laser.aLaserX>brickLeft&&laser.aLaserX<brickRight&&laser.aLaserY>brickTop&&laser.aLaserY<brickBottom){
+          brickList.splice(j,1);
+          aLaserList.splice(i,1);
+        }
+      }
+    }
     laserGen = Math.round(random(1,100));
     if(laserGen<=3){
       let laserAlien = alienList[Math.round(random(0,alienList.length-1))];
@@ -186,7 +213,8 @@ function draw(){
         lowestAlien = alien.posY;
       }
     }
-    if(lowestAlien>=shipY-alien1anim1.height/2-height/80){
+    if(lowestAlien>=(height/2+height/5)-(0.5*30)-alien1anim1.height/2-height/80){
+      explosionSound.play();
       gameOver = true;
     }
     for(let i=0;i<alienList.length;i++){
@@ -264,12 +292,15 @@ function draw(){
       location.reload();
     }
   }
+  for(let i=0;i<brickList.length;i++){
+    brickList[i].displayBricks();
+  }
   textSize(height/12);
   text(killCount, width/13, height/13-10);
 }
 
 function keyReleased(){
-  if((keyCode===UP_ARROW)||(keyCode===87)&&gameOver===false){
+  if(((keyCode===UP_ARROW)||(keyCode===87))&&gameOver===false){
     pLaserList.push(new pLaser(shipX,shipY-height/80-25));
     shootSound.play();
   }
@@ -347,42 +378,67 @@ class aLaser{
 }
 
 class Barrier{
-  constructor(barrierX, barrierY){
+  constructor(barrierX, barrierY, barrierNum){
     this.barrierX = barrierX;
     this.barrierY = barrierY;
+    this.barrierNum = barrierNum;
   }
   makeBricks(){
-    for(let i=0;i<14;i++){
-      brickList.push(new BarrierBrick(i))
+    for(let i=1;i<15;i++){
+      let position = i;
+      if(position===1){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-3.5*20,this.barrierY+1.5*30))
+      }
+      else if(position===2){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-2.5*20,this.barrierY+1.5*30))
+      }
+      else if(position===3){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-2.5*20,this.barrierY+0.5*30))
+      }
+      else if(position===4){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-1.5*20,this.barrierY+1*30))
+      }
+      else if(position===5){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-1.5*20,this.barrierY))
+      }
+      else if(position===6){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-0.5*20,this.barrierY+0.5*30))
+      }
+      else if(position===7){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX-0.5*20,this.barrierY-0.5*30))
+      }
+      else if(position===8){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+0.5*20,this.barrierY+0.5*30))
+      }
+      else if(position===9){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+0.5*20,this.barrierY-0.5*30))
+      }
+      else if(position===10){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+1.5*20,this.barrierY+1*30))
+      }
+      else if(position===11){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+1.5*20,this.barrierY))
+      }
+      else if(position===12){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+2.5*20,this.barrierY+1.5*30))
+      }
+      else if(position===13){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+2.5*20,this.barrierY+0.5*30))
+      }
+      else if(position===14){
+        brickList.push(new BarrierBrick(this.barrierNum,this.barrierX+3.5*20,this.barrierY+1.5*30))
+      }
     }
   }
 }
 
 class BarrierBrick{
-  constructor(position){
-    this.position = position;
+  constructor(barrier, brickX, brickY){
+    this.barrier = barrier;
+    this.brickX = brickX;
+    this.brickY = brickY;
   }
   displayBricks(){
-    if(this.position===1){
-      rect(barrierX-3.5*20,barrierY+1.5*70,20,70);
-    }
-    else if(this.position===2){
-      rect(barrierX-2.5*20,barrierY+1.5*70,20,70);
-    }
-    else if(this.position===3){
-      rect(barrierX-2.5*20,barrierY+0.5*70,20,70);
-    }
-    else if(this.position===4){
-      rect(barrierX-1.5*20,barrierY+1*70,20,70);
-    }
-    else if(this.position===5){
-      rect(barrierX-1.5*20,barrierY,20,70);
-    }
-    else if(this.position===6){
-      rect(barrierX-0.5*20,barrierY+0.5*70,20,70);
-    }
-    else if(this.position===7){
-      rect(barrierX-0.5*20,barrierY-0.5*70,20,70);
-    }
+    rect(this.brickX,this.brickY,20,30);
   }
 }
