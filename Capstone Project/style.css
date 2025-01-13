@@ -6,3 +6,9 @@ html, body {
 canvas {
   display: block;
 }
+
+button {
+  margin:auto;
+  display:block;
+}
+
