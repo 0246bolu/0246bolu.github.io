@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sketch</title>
+    <title>Menu</title>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
@@ -21,66 +21,44 @@
 
     <script src="libraries/p5.sound.min.js"></script>
     <style>
-      button {
-        transform-origin: center;
-        display: inline-block;
-        padding: 15px 25px;
-        font-size: 24px;
-        cursor: pointer;
+        button {
+          transform-origin: center;
+          display: inline-block;
+          padding: 15px 25px;
+          font-size: 24px;
+          cursor: pointer;
+          text-align: center;
+          text-decoration: none;
+          outline: none;
+          color: #fff;
+          background-color: #007df1;
+          border: none;
+          border-radius: 15px;
+          box-shadow: 0 9px #999;
+          position: absolute;
+        }
+        .wrapper {
         text-align: center;
-        text-decoration: none;
-        outline: none;
-        color: #fff;
-        background-color: #04AA6D;
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 9px #999;
-        position: absolute;
-      }
-
-      .spaceButton {
-        top: 50%;
-      }
-
-      .breakButton {
-        top: 60%;
-      }
-
-      .pacButton {
-        top: 40%;
-      }
-
-      .snakeButton {
-        top: 30%;
-      }
-
-      .pongButton {
-        top: 20%;
-      }
+        display: flex;
+        justify-content: center;
+        }
+        .startButton {
+          top: 50%;
+        }
+        button:hover {background-color: #001574}
       
-      button:hover {background-color: #3e8e41}
-      
-      button:active {
-        background-color: #3e8e41;
-        box-shadow: 0 5px #666;
-        transform: translateY(4px);
-      }
-      .wrapper {
-        text-align: center;
-        transform: translateX(150);
-      }
-
-      </style>
-  </head>
+        button:active {
+          background-color: #010058;
+          box-shadow: 0 5px #666;
+          transform: translateY(4px);
+        }
+    </style>
+</head>
   <body>
+    <div class="wrapper">
+        <button class="startButton" onclick="location.href='menu.html'">CLICK HERE TO START</button>
+    </div>
   <script src="sketch.js">
   </script>
-    <div class="wrapper">
-      <button class="spaceButton" onclick="location.href='indexSpace.html'">Space Invaders</button>
-      <button class="breakButton" onclick="location.href='indexBreakout.html'">Breakout</button>
-      <button class="pacButton" onclick="location.href='indexBreakout.html'">Pac-Man</button>
-      <button class="snakeButton" onclick="location.href='indexBreakout.html'">Snake</button>
-      <button class="pongButton" onclick="location.href='indexBreakout.html'">Pong</button>
-    </div>
   </body>
 </html>
