@@ -70,6 +70,7 @@ function draw(){
         ball();
     }
     else{
+        strokeWeight(5);
         if(p1Win===true){
             fill(0,255,0);
             textSize(60);
@@ -110,13 +111,25 @@ function ball(){
     if(right>p1Left&&left<p1Right&&bottom>p1Top&&top<p1Bottom){
         if(vel.x<0){
             vel.x *= -1;
+            if(keyIsDown(87)){
+                vel.y = abs(vel.y)*(-1);
+            }
+            else if(keyIsDown(83)){
+                vel.y = abs(vel.y);
+            }
             pos.x = p1Right+height/120+5;
             bounceSound.play();
         }
     }
     if(left<p2Right&&right>p2Left&&bottom>p2Top&&top<p2Bottom){
         if (vel.x>0){
-            vel.x *= -1; 
+            vel.x *= -1;
+            if(keyIsDown(UP_ARROW)){
+                vel.y = abs(vel.y)*(-1);
+            }
+            else if(keyIsDown(DOWN_ARROW)){
+                vel.y = abs(vel.y);
+            }
             pos.x = p2Left-height/120+5;
             bounceSound.play();
         }
