@@ -337,9 +337,6 @@ class Alien{
     }
     if(right===true&&gameOver===false){
       this.posX+=alienVel;
-      // if(alienSound.isPlaying()===false){
-      //   alienSound.play();
-      // }
       if(this.posX>width-alien1anim2.width/2){
         right = false;
         drop = true;
