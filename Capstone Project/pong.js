@@ -32,11 +32,13 @@ function setup(){
     paddle2X = width-100;
     paddle2Y = height/2;
     ballMinusButton = createButton("-");
-    ballMinusButton.position(162.5,height/13);
-    ballPlusButton = createButton("-");
-    ballPlusButton.position(403.5,height/13);
+    ballMinusButton.position(692.5,height/13-10);
+    ballPlusButton = createButton("+");
+    ballPlusButton.position(933.5,height/13-10);
     paddleMinusButton = createButton("-");
-    paddlePlusButton = createButton("-");
+    paddleMinusButton.position(1055,height/13-10);
+    paddlePlusButton = createButton("+");
+    paddlePlusButton.position(1330,height/13-10);
     pos = createVector(width/2, random(0,height));
     let velSign = Math.round(random());
     if(velSign===0){
@@ -48,8 +50,11 @@ function setup(){
 }
 
 function draw(){
-    console.log(mouseX)
     background(0);
+    ballMinusButton.mousePressed(ballSpeedChange("minus"));
+    ballPlusButton.mousePressed(ballSpeedChange("plus"));
+    paddleMinusButton.mousePressed(paddleSpeed-=2);
+    paddlePlusButton.mousePressed(paddleSpeed+=2);
     for(let i=0;i<windowWidth;i+=60){
         stroke(255);
         strokeWeight(5);
@@ -111,9 +116,16 @@ function draw(){
     }
 }
 
-// function mouseClicked(){
-//     if((mouseY>=height/13-height/25/2)&&(mouseY<=height/13+height/25/2)&&(mouseX>=width/13+width/4.5))
-// }
+function ballSpeedChange(dir){
+    if(dir==="minus"){
+        vel.y-=5;
+        vel.x-=5;
+    }
+    else{
+        vel.y+=5;
+        vel.x+=5;
+    }
+}
 
 function ball(){
     let left = pos.x-width/120;
