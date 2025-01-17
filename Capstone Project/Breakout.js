@@ -22,18 +22,21 @@ let winSound;
 let bounceSound;
 let s = 0;
 let l = 0;
+let font;
 
 function preload(){
   loseSound = loadSound("assets/8-bit-video-game-fail-version-2-145478.mp3");
   breakSound = loadSound("assets/8-bit-video-game-points-version-1-145826.mp3");
   winSound = loadSound("assets/8-bit-video-game-win-level-sound-version-1-145827.mp3");
   bounceSound = loadSound("assets/impact-sound-effect-8-bit-retro-151796.mp3");
+  font = loadFont("assets/ARCADE_N.TTF");
 }
 
 function setup(){
   createCanvas(950,948);
   rectMode(CENTER);
   textAlign(CENTER);
+  textFont(font);
   pos = createVector(random(0,width), height/2);
   let velSign = Math.round(random());
   if(velSign===0){
@@ -135,7 +138,7 @@ function draw(){
   if(breakCount>localStorage.getItem("breakoutHighScore")){
     localStorage.setItem("breakoutHighScore", breakCount);
     localStorage.setItem("breakoutBestTime", timeHigh);
-    textSize(height/12);
+    textSize(height/12/1.25);
     newHighScore = true;
   }
   else if(breakCount>=localStorage.getItem("breakoutHighScore")&&timeHigh<localStorage.getItem("breakoutBestTime")){
@@ -143,9 +146,9 @@ function draw(){
     newHighScore = true;
   }
   fill(255);
-  textSize(height/12);
+  textSize(height/12/1.5);
   text(timeMin+":"+timerTen+timer, width/2, height/13);
-  textSize(height/35)
+  textSize(height/35/2)
   if(newHighScore===true&&localStorage.getItem("breakoutHighScore")>0){
     fill(0,255,0);
     text("NEW HIGH SCORE!", width-width/5, height/13-height/25);
@@ -293,7 +296,7 @@ function ball(){
   }
   if(pos.y>=height&&breakCount<112){
     fill(255,0,0);
-    textSize(height/10);
+    textSize(height/10/2);
     text("GAME OVER", width/2, height/2);
     l++;
     if(l<=1){
@@ -303,7 +306,7 @@ function ball(){
   }
   if(breakCount===112){
     fill(0,255,0);
-    textSize(height/10);
+    textSize(height/10/2);
     text("YOU WIN", width/2, height/2);
     s++;
     if(s<=1){
@@ -312,6 +315,6 @@ function ball(){
     gameOver = true;
   }
   rect(pos.x, pos.y, height/60);
-  textSize(height/12);
+  textSize(height/12/1.5);
   text(breakCount, width/13, height/13);
 }

@@ -40,6 +40,7 @@ let barrierList = [];
 let brickList = [];
 let barrierX;
 let barrierY;
+let font;
 
 function preload(){
   alien1anim1 = loadImage("assets/alien1anim1.png");
@@ -54,6 +55,7 @@ function preload(){
   alienSound = loadSound("assets/fastinvader1.wav");
   alienKilledSound = loadSound("assets/invaderKilled.wav");
   shootSound = loadSound("assets/shoot.wav");
+  font = loadFont("assets/ARCADE_N.TTF");
 }
 
 function setup() {
@@ -62,6 +64,7 @@ function setup() {
   noStroke();
   rectMode(CENTER);
   textAlign(CENTER);
+  textFont(font);
   shipX = width/2;
   shipY = height/2 + height/3;
   barrierX = width/2;
@@ -227,7 +230,7 @@ function draw(){
     if(killCount>localStorage.getItem("spaceInvadersHighScore")){
       localStorage.setItem("spaceInvadersHighScore", killCount);
       localStorage.setItem("spaceInvadersBestTime", timer);
-      textSize(height/12);
+      textSize(height/12/2);
       newHighScore = true;
     }
     else if(killCount>=localStorage.getItem("spaceInvadersHighScore")&&timer<localStorage.getItem("spaceInvadersBestTime")){
@@ -235,9 +238,9 @@ function draw(){
       newHighScore = true;
     }
     fill(255);
-    textSize(height/12);
+    textSize(height/12/2);
     text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10);
-    textSize(height/35)
+    textSize(height/35/2)
     if(newHighScore===true&&localStorage.getItem("spaceInvadersHighScore")>0){
       fill(0,255,0);
       text("NEW HIGH SCORE!", width-width/5, height/13-height/25);
@@ -274,9 +277,9 @@ function draw(){
       rect(shipX, shipY-height/80, 10, 25);
     }
     fill(255);
-    textSize(height/12);
+    textSize(height/12/1.5);
     text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10);
-    textSize(height/35);
+    textSize(height/35/2);
     if(highScoreSec>=10){
       text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10);
     }
@@ -295,7 +298,7 @@ function draw(){
   for(let i=0;i<brickList.length;i++){
     brickList[i].displayBricks();
   }
-  textSize(height/12);
+  textSize(height/12/1.5);
   text(killCount, width/13, height/13-10);
 }
 

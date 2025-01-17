@@ -7,34 +7,48 @@ let p1Win = false;
 let p2Win = false;
 let p1WinCount = 0;
 let p2WinCount = 0;
-let paddleSpeed = 7;
+let paddleSpeed = 12;
 let pos;
 let vel;
+let font;
+let ballMinusButton;
+let ballPlusButton;
+let paddleMinusButton;
+let paddlePlusButton;
 
 function preload(){
     bounceSound = loadSound("assets/impact-sound-effect-8-bit-retro-151796.mp3");
     scoreSound = loadSound("assets/8-bit-video-game-points-version-1-145826.mp3");
+    font = loadFont("assets/ARCADE_N.TTF");
 }
 
 function setup(){
     createCanvas(950,948);
     rectMode(CENTER);
     textAlign(CENTER);
+    textFont(font);
     paddle1X = 100;
     paddle1Y = height/2;
     paddle2X = width-100;
     paddle2Y = height/2;
+    ballMinusButton = createButton("-");
+    ballMinusButton.position(162.5,height/13);
+    ballPlusButton = createButton("-");
+    ballPlusButton.position(403.5,height/13);
+    paddleMinusButton = createButton("-");
+    paddlePlusButton = createButton("-");
     pos = createVector(width/2, random(0,height));
     let velSign = Math.round(random());
     if(velSign===0){
-        vel = createVector(-5,3);
+        vel = createVector(-8,6);
     }
     else{
-        vel = createVector(5,3);
+        vel = createVector(8,6);
     }
 }
 
 function draw(){
+    console.log(mouseX)
     background(0);
     for(let i=0;i<windowWidth;i+=60){
         stroke(255);
@@ -63,9 +77,14 @@ function draw(){
             paddle2Y+=paddleSpeed;
         }
     }
-    textSize(height/12);
+    textSize(height/12/2);
+    strokeWeight(3);
     text(p1WinCount, width/13, height/13);
     text(p2WinCount, width-width/13, height/13);
+    strokeWeight(1);
+    textSize(height/25/2);
+    text("-"+" Ball Speed "+"+", width/13+width/4.5, height/13);
+    text("-"+" Paddle Speed "+"+", width-width/13-width/4.5, height/13)
     if(gameOver===false){
         ball();
     }
@@ -73,13 +92,13 @@ function draw(){
         strokeWeight(5);
         if(p1Win===true){
             fill(0,255,0);
-            textSize(60);
+            textSize(60/1.5);
             text("PLAYER ONE WINS", width/2, height/2);
             fill(255);
         }
         else{
             fill(0,255,0);
-            textSize(60);
+            textSize(60/1.5);
             text("PLAYER TWO WINS", width/2, height/2);
             fill(255);
         }
@@ -91,6 +110,10 @@ function draw(){
         }
     }
 }
+
+// function mouseClicked(){
+//     if((mouseY>=height/13-height/25/2)&&(mouseY<=height/13+height/25/2)&&(mouseX>=width/13+width/4.5))
+// }
 
 function ball(){
     let left = pos.x-width/120;
@@ -143,10 +166,10 @@ function ball(){
                 pos.y = height/2;
                 let velSign = Math.round(random());
                 if(velSign===0){
-                    vel = createVector(-5,3);
+                    vel = createVector(-8,6);
                 }
                 else{
-                    vel = createVector(5,3);
+                    vel = createVector(8,6);
                 }
             }
             paddle1Y = height/2;
@@ -166,10 +189,10 @@ function ball(){
                 pos.y = height/2;
                 let velSign = Math.round(random());
                 if(velSign===0){
-                    vel = createVector(-5,3);
+                    vel = createVector(-8,6);
                 }
                 else{
-                    vel = createVector(5,3);
+                    vel = createVector(8,6);
                 }
             }
             paddle1Y = height/2;
