@@ -113,27 +113,27 @@ function draw(){
       timeMin++;
       timerTen = 0;
     }
-    if(abs(vel.y)<=5||abs(vel.x)<=7){
-      paddleSpeed+=0.05;
-      if(vel.x>0){
-        vel.x+=0.05;
-        if(vel.y>0){
-          vel.y+=0.05;
-        }
-        else{
-          vel.y-=0.05;
-        }
-      }
-      else{
-        vel.x-=0.05;
-        if(vel.y>0){
-          vel.y+=0.05;
-        }
-        else{
-          vel.y-=0.05;
-        }
-      } 
-    }
+    // if(abs(vel.y)<=5||abs(vel.x)<=7){
+    //   paddleSpeed+=0.05;
+    //   if(vel.x>0){
+    //     vel.x+=0.05;
+    //     if(vel.y>0){
+    //       vel.y+=0.05;
+    //     }
+    //     else{
+    //       vel.y-=0.05;
+    //     }
+    //   }
+    //   else{
+    //     vel.x-=0.05;
+    //     if(vel.y>0){
+    //       vel.y+=0.05;
+    //     }
+    //     else{
+    //       vel.y-=0.05;
+    //     }
+    //   } 
+    // }
   }
   if(breakCount>localStorage.getItem("breakoutHighScore")){
     localStorage.setItem("breakoutHighScore", breakCount);

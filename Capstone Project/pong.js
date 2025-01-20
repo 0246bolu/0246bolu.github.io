@@ -15,14 +15,41 @@ let ballMinusButton;
 let ballPlusButton;
 let paddleMinusButton;
 let paddlePlusButton;
+let ballResetButton;
+let ballX;
+let ballY;
 
 function preload(){
     bounceSound = loadSound("assets/impact-sound-effect-8-bit-retro-151796.mp3");
     scoreSound = loadSound("assets/8-bit-video-game-points-version-1-145826.mp3");
     font = loadFont("assets/ARCADE_N.TTF");
 }
+// localStorage.setItem("ballSpeedX", 4.5);
+// localStorage.setItem("ballSpeedY", 4.5);
 
 function setup(){
+    if(localStorage.getItem("ballSpeedX") === null){
+        localStorage.setItem("ballSpeedX", 6);
+        ballX = 6;
+    }
+    else{
+        ballX = Number(localStorage.getItem("ballSpeedX"));
+    }
+
+    if(localStorage.getItem("ballSpeedY") === null){
+        localStorage.setItem("ballSpeedY", 4.5);
+        ballY = 4.5;
+    }
+    else{
+        ballY = Number(localStorage.getItem("ballSpeedY"));
+    }
+    let velSign = Math.round(random());
+    if(velSign===0){
+        vel = createVector(-(ballX),ballY);
+    }
+    else{
+        vel = createVector(ballX,ballY);
+    }
     createCanvas(950,948);
     rectMode(CENTER);
     textAlign(CENTER);
@@ -32,29 +59,16 @@ function setup(){
     paddle2X = width-100;
     paddle2Y = height/2;
     ballMinusButton = createButton("-");
-    ballMinusButton.position(692.5,height/13-10);
+    ballResetButton = createButton("Reset Speed");
     ballPlusButton = createButton("+");
-    ballPlusButton.position(933.5,height/13-10);
-    paddleMinusButton = createButton("-");
-    paddleMinusButton.position(1055,height/13-10);
-    paddlePlusButton = createButton("+");
-    paddlePlusButton.position(1330,height/13-10);
     pos = createVector(width/2, random(0,height));
-    let velSign = Math.round(random());
-    if(velSign===0){
-        vel = createVector(-8,6);
-    }
-    else{
-        vel = createVector(8,6);
-    }
 }
 
 function draw(){
     background(0);
-    ballMinusButton.mousePressed(ballSpeedChange("minus"));
-    ballPlusButton.mousePressed(ballSpeedChange("plus"));
-    paddleMinusButton.mousePressed(paddleSpeed-=2);
-    paddlePlusButton.mousePressed(paddleSpeed+=2);
+    ballMinusButton.mousePressed(ballMinus);
+    ballPlusButton.mousePressed(ballPlus);
+    ballResetButton.mousePressed(ballReset);
     for(let i=0;i<windowWidth;i+=60){
         stroke(255);
         strokeWeight(5);
@@ -86,10 +100,6 @@ function draw(){
     strokeWeight(3);
     text(p1WinCount, width/13, height/13);
     text(p2WinCount, width-width/13, height/13);
-    strokeWeight(1);
-    textSize(height/25/2);
-    text("-"+" Ball Speed "+"+", width/13+width/4.5, height/13);
-    text("-"+" Paddle Speed "+"+", width-width/13-width/4.5, height/13)
     if(gameOver===false){
         ball();
     }
@@ -116,14 +126,66 @@ function draw(){
     }
 }
 
-function ballSpeedChange(dir){
-    if(dir==="minus"){
-        vel.y-=5;
-        vel.x-=5;
+function ballMinus(){
+    if(vel.y>2){
+        vel.y-=0.5;
+        localStorage.setItem("ballSpeedY", vel.y-0.5);
+        ballY = Number(localStorage.getItem("ballSpeedY"));
+    }
+    else if(vel.y<-2){
+        vel.y+=0.5;
+        localStorage.setItem("ballSpeedY", vel.y+0.5);
+        ballY = Number(localStorage.getItem("ballSpeedY"));
+    }
+    if(vel.x>2){
+        vel.x-=0.65;
+        localStorage.setItem("ballSpeedX", vel.x-0.653);
+        ballX = Number(localStorage.getItem("ballSpeedX"));
+    }
+    else if(vel.x<-2){
+        vel.x+=0.65;
+        localStorage.setItem("ballSpeedX", vel.x+0.65);
+        ballX = Number(localStorage.getItem("ballSpeedX"));
+    }
+}
+
+function ballPlus(){
+    if(vel.y>0){
+        vel.y+=0.5;
+        localStorage.setItem("ballSpeedY", vel.y+0.5);
+        ballY = Number(localStorage.getItem("ballSpeedY"));
     }
     else{
-        vel.y+=5;
-        vel.x+=5;
+        vel.y-=0.5;
+        localStorage.setItem("ballSpeedY", vel.y-0.5);
+        ballY = Number(localStorage.getItem("ballSpeedY"));
+    }
+    if(vel.x>0){
+        vel.x+=0.65;
+        localStorage.setItem("ballSpeedX", vel.x+0.65);
+        ballX = Number(localStorage.getItem("ballSpeedX"));
+    }
+    else{
+        vel.x-=0.65;
+        localStorage.setItem("ballSpeedX", vel.x-0.65)
+        ballX = Number(localStorage.getItem("ballSpeedX"));
+    }
+}
+
+function ballReset(){
+    localStorage.setItem("ballSpeedX", 6);
+    if(vel.x>0){
+        vel.x = 6;
+    }
+    else{
+        vel.x = -6;
+    }
+    localStorage.setItem("ballSpeedY", 4.5);
+    if(vel.y>0){
+        vel.y = 4.5;
+    }
+    else{
+        vel.y = -4.5;
     }
 }
 
@@ -178,10 +240,10 @@ function ball(){
                 pos.y = height/2;
                 let velSign = Math.round(random());
                 if(velSign===0){
-                    vel = createVector(-8,6);
+                    vel = createVector(-vel.x,vel.y);
                 }
                 else{
-                    vel = createVector(8,6);
+                    vel = createVector(vel.x,vel.y);
                 }
             }
             paddle1Y = height/2;
@@ -201,10 +263,10 @@ function ball(){
                 pos.y = height/2;
                 let velSign = Math.round(random());
                 if(velSign===0){
-                    vel = createVector(-8,6);
+                    vel = createVector(-vel.x,vel.y);
                 }
                 else{
-                    vel = createVector(8,6);
+                    vel = createVector(vel.x,vel.y);
                 }
             }
             paddle1Y = height/2;
