@@ -33,7 +33,7 @@ function preload(){
 }
 
 function setup(){
-  createCanvas(950,948);
+  createCanvas(950, windowHeight);
   rectMode(CENTER);
   textAlign(CENTER);
   textFont(font);

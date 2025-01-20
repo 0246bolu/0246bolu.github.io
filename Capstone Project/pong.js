@@ -50,7 +50,7 @@ function setup(){
     else{
         vel = createVector(ballX,ballY);
     }
-    createCanvas(950,948);
+    createCanvas(950, windowHeight);
     rectMode(CENTER);
     textAlign(CENTER);
     textFont(font);

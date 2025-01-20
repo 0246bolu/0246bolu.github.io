@@ -32,6 +32,6 @@ function draw() {
 function menu(){
   image(bgImage, 0, 0, windowWidth, windowHeight);
   imageMode(CENTER);
-  image(logo, width/2, height/5.75, logo.width/1.25,logo.height/1.25);
+  image(logo, width/2, height/5.75, logo.width/1.4,logo.height/1.4);
   imageMode(CORNER);
 }

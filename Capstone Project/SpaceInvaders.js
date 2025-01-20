@@ -59,7 +59,7 @@ function preload(){
 }
 
 function setup() {
-  createCanvas(950, 948);
+  createCanvas(950, windowHeight);
   imageMode(CENTER);
   noStroke();
   rectMode(CENTER);
