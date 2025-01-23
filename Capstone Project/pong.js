@@ -1,4 +1,8 @@
-let paddle1X;
+// Arcade Experience - Pong
+// Lucas Boyd and Ted Song
+// 1/22/2025
+
+let paddle1X; // Defining universal variables to be used throughout program
 let paddle1Y;
 let paddle2X;
 let paddle2Y;
@@ -19,16 +23,14 @@ let ballResetButton;
 let ballX;
 let ballY;
 
-function preload(){
+function preload(){ // Preloads assets to be used later
     bounceSound = loadSound("assets/impact-sound-effect-8-bit-retro-151796.mp3");
     scoreSound = loadSound("assets/8-bit-video-game-points-version-1-145826.mp3");
     font = loadFont("assets/ARCADE_N.TTF");
 }
-// localStorage.setItem("ballSpeedX", 4.5);
-// localStorage.setItem("ballSpeedY", 4.5);
 
 function setup(){
-    if(localStorage.getItem("ballSpeedX") === null){
+    if(localStorage.getItem("ballSpeedX") === null){ // Checks local storage for user determined ball speed
         localStorage.setItem("ballSpeedX", 6);
         ballX = 6;
     }
@@ -58,7 +60,7 @@ function setup(){
     paddle1Y = height/2;
     paddle2X = width-100;
     paddle2Y = height/2;
-    ballMinusButton = createButton("-");
+    ballMinusButton = createButton("-"); // Buttons for players to change speed
     ballResetButton = createButton("Reset Speed");
     ballPlusButton = createButton("+");
     pos = createVector(width/2, random(0,height));
@@ -69,14 +71,14 @@ function draw(){
     ballMinusButton.mousePressed(ballMinus);
     ballPlusButton.mousePressed(ballPlus);
     ballResetButton.mousePressed(ballReset);
-    for(let i=0;i<windowWidth;i+=60){
+    for(let i=0;i<windowWidth;i+=60){ // Draw middle lines
         stroke(255);
         strokeWeight(5);
         line(windowHeight/2, i,  windowHeight/2, i+30);
     }
-    rect(paddle1X, paddle1Y,height/65,width/14);
+    rect(paddle1X, paddle1Y,height/65,width/14);  // Draw Paddles
     rect(paddle2X, paddle2Y,height/65,width/14);
-    if((keyIsDown(87))&&gameOver===false){
+    if((keyIsDown(87))&&gameOver===false){ // Paddle movement
         if(paddle1Y>0){
         paddle1Y-=paddleSpeed;
         }
@@ -98,12 +100,12 @@ function draw(){
     }
     textSize(height/12/2);
     strokeWeight(3);
-    text(p1WinCount, width/13, height/13);
+    text(p1WinCount, width/13, height/13); // Displays respective win counts
     text(p2WinCount, width-width/13, height/13);
     if(gameOver===false){
         ball();
     }
-    else{
+    else{ // If game is over, displays which player won and prompts players to start over
         strokeWeight(5);
         if(p1Win===true){
             fill(0,255,0);
@@ -126,7 +128,7 @@ function draw(){
     }
 }
 
-function ballMinus(){
+function ballMinus(){ // If ball minus speed button is pressed, changes stored ball speed value and current ball speed
     if(vel.y>2){
         vel.y-=0.5;
         localStorage.setItem("ballSpeedY", vel.y-0.5);
@@ -149,7 +151,7 @@ function ballMinus(){
     }
 }
 
-function ballPlus(){
+function ballPlus(){ // If ball plus speed button is pressed, changes stored ball speed value and current ball speed
     if(vel.y>0){
         vel.y+=0.5;
         localStorage.setItem("ballSpeedY", vel.y+0.5);
@@ -172,7 +174,7 @@ function ballPlus(){
     }
 }
 
-function ballReset(){
+function ballReset(){ // Resets ball speed on click
     localStorage.setItem("ballSpeedX", 6);
     if(vel.x>0){
         vel.x = 6;
@@ -190,7 +192,7 @@ function ballReset(){
 }
 
 function ball(){
-    let left = pos.x-width/120;
+    let left = pos.x-width/120; // Defines boundaries of paddles and ball
     let right = pos.x+width/120;
     let top = pos.y-width/120;
     let bottom = pos.y+width/120;
@@ -205,7 +207,7 @@ function ball(){
     strokeWeight(0);
     fill(255);
     pos.add(vel);
-    if(right>p1Left&&left<p1Right&&bottom>p1Top&&top<p1Bottom){
+    if(right>p1Left&&left<p1Right&&bottom>p1Top&&top<p1Bottom){ // Checks for ball-paddle collision for paddles
         if(vel.x<0){
             vel.x *= -1;
             if(keyIsDown(87)){
@@ -218,7 +220,7 @@ function ball(){
             bounceSound.play();
         }
     }
-    if(left<p2Right&&right>p2Left&&bottom>p2Top&&top<p2Bottom){
+    if(left<p2Right&&right>p2Left&&bottom>p2Top&&top<p2Bottom){ 
         if (vel.x>0){
             vel.x *= -1;
             if(keyIsDown(UP_ARROW)){
@@ -231,7 +233,7 @@ function ball(){
             bounceSound.play();
         }
     }
-    if(pos.x<=0){
+    if(pos.x<=0){ // Checks if ball goes off either side, restarting the round
         if(p2WinCount<3&&p1WinCount<3){
             p2WinCount++;
             scoreSound.play();
@@ -277,7 +279,7 @@ function ball(){
             p1Win = true;
         }
     }
-    if(pos.y<0){
+    if(pos.y<0){ // Checks for boundary collision
         vel.y *= -1;
         bounceSound.play();
     }
@@ -285,5 +287,5 @@ function ball(){
       vel.y *= -1;
       bounceSound.play();
     }
-    rect(pos.x, pos.y, height/60);
+    rect(pos.x, pos.y, height/60); // Displays ball
 }

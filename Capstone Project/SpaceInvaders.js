@@ -1,4 +1,8 @@
-let alienList = [];
+// Arcade Experience - Space Invaders
+// Lucas Boyd and Ted Song
+// 1/22/2025
+
+let alienList = []; // Defines global variables to be used throughout the program
 let alien1anim1;
 let alien1anim2;
 let alien2anim1;
@@ -42,7 +46,7 @@ let barrierX;
 let barrierY;
 let font;
 
-function preload(){
+function preload(){ // Preloads assets
   alien1anim1 = loadImage("assets/alien1anim1.png");
   alien1anim2 = loadImage("assets/alien1anim2.png");
   alien2anim1 = loadImage("assets/alien2anim1.png");
@@ -58,8 +62,8 @@ function preload(){
   font = loadFont("assets/ARCADE_N.TTF");
 }
 
-function setup() {
-  createCanvas(950, windowHeight);
+function setup(){
+  createCanvas(950, windowHeight); // Properties of window, shapes and texts
   imageMode(CENTER);
   noStroke();
   rectMode(CENTER);
@@ -69,18 +73,18 @@ function setup() {
   shipY = height/2 + height/3;
   barrierX = width/2;
   barrierY = height/2;
-  for(let i=0;i<5;i++){
+  for(let i=0;i<5;i++){ // Pushes new alien objects into a list of aliens
     for(let j=0;j<12;j++){
         alienList.push(new Alien(1.5*j/2*width/12+width/28, 2.5*i*height/38+height/10, i))
     }
   }
-  for(let i=0;i<4;i++){
+  for(let i=0;i<4;i++){ // Pushes new barrier object into list of barriers
     barrierList.push(new Barrier(120+i*237,height/2+height/5, i));
   }
-  for(let i=0;i<barrierList.length;i++){
+  for(let i=0;i<barrierList.length;i++){ // Calls makeBricks function for each barrier
     barrierList[i].makeBricks();
   }
-  if(localStorage.getItem("spaceInvadersHighScore")===null){
+  if(localStorage.getItem("spaceInvadersHighScore")===null){ // Checks local storage for high score and best time, if none creates new ones
     localStorage.setItem("spaceInvadersHighScore", 0);
   }
   else{
@@ -98,9 +102,9 @@ function draw(){
   background(0);
   fill(255);
   if(gameOver===false){
-    rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
+    rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0); // Displays ship
     rect(shipX, shipY-height/80, 10, 25);
-    if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))){
+    if((keyIsDown(RIGHT_ARROW)||keyIsDown(68))){ // Ship movement
       if(shipX<width){
         shipX+=shipSpeed;
       }
@@ -111,12 +115,12 @@ function draw(){
       }
     }
     if(drop===true){
-      for(let i=0;i<alienList.length;i++){
+      for(let i=0;i<alienList.length;i++){ // Drops each alien down 15 pixels
         alienList[i].posY += 15;
       }
       drop = false;
     }
-    if(frameCount%60===0&&gameOver===false){
+    if(frameCount%60===0&&gameOver===false){ // Timer set up
       timer++;
       timeHigh++;
       if(timeHigh>9){
@@ -128,26 +132,26 @@ function draw(){
         timerTen = 0;
       }
     }
-    if(timer%2===0){
+    if(timer%2===0){ // If timer is even, first animation for each alien is displayed, second if odd
       alienFirstAnim = true;
     }
     else{
       alienFirstAnim = false;
     }
-    if(timer%120===0){
+    if(timer%120===0){ // Gradual speed up of aliens and ship
       shipSpeed+=0.015;
       alienVel+=0.015;
     }
     if(frameCount%15===0){
-      if((keyIsDown(UP_ARROW)||keyIsDown(87))&&pLaserShoot===true){
+      if((keyIsDown(UP_ARROW)||keyIsDown(87))&&pLaserShoot===true){ // Creates new laser object when player shoots
         pLaserList.push(new pLaser(shipX,shipY-height/80-25));
         shootSound.play();
       }
     }
-    for(let i=0;i<pLaserList.length;i++){
+    for(let i=0;i<pLaserList.length;i++){ // Displays player lasers
       pLaserList[i].displayPLaser();
     }
-    for(let i=0;i<pLaserList.length;i++){
+    for(let i=0;i<pLaserList.length;i++){ // Checks if any player laser is colliding with any alien, if so, deletes laser and alien
       let laser = pLaserList[i];
       for(let j=0;j<alienList.length;j++){
         let alien = alienList[j];
@@ -164,7 +168,7 @@ function draw(){
         }
       }
     }
-    for(let i=0;i<aLaserList.length;i++){
+    for(let i=0;i<aLaserList.length;i++){ // Checks if any alien laser is colliding with player, if so, ends game and deletes laser
       let laser = aLaserList[i];
       if(laser.aLaserX>shipX-width/14&&laser.aLaserX<shipX+width/14&&laser.aLaserY>shipY-height/40/2-25&&laser.aLaserY<shipY+height/80){
         aLaserList.splice(i,1);
@@ -172,7 +176,7 @@ function draw(){
         gameOver = true;
       }
     }
-    for(let i=0; i<pLaserList.length; i++){
+    for(let i=0; i<pLaserList.length; i++){ // Checks if player laser is colliding with a barrier brick, if so, deletes brick and laser
       let laser = pLaserList[i];
       for(let j=0; j<brickList.length; j++){
         let brick = brickList[j];
@@ -186,7 +190,7 @@ function draw(){
         }
       }
     }
-    for(let i=0; i<aLaserList.length; i++){
+    for(let i=0; i<aLaserList.length; i++){ // Checks if alien laser is colliding with a barrier brick, if so, deletes brick and laser
       let laser = aLaserList[i];
       for(let j=0; j<brickList.length; j++){
         let brick = brickList[j];
@@ -200,34 +204,34 @@ function draw(){
         }
       }
     }
-    laserGen = Math.round(random(1,100));
+    laserGen = Math.round(random(1,100)); // Creates one in a hundred chance a new alien laser object will be created at alien position
     if(laserGen<=3){
       let laserAlien = alienList[Math.round(random(0,alienList.length-1))];
       let laserAlienX = laserAlien.posX;
       let laserAlienY = laserAlien.posY;
       aLaserList.push(new aLaser(laserAlienX,laserAlienY));
     }
-    for(let i=0;i<aLaserList.length;i++){
+    for(let i=0;i<aLaserList.length;i++){ // Displays each alien laser
       aLaserList[i].displayALaser();
     }
-    for(let i=0;i<alienList.length;i++){
+    for(let i=0;i<alienList.length;i++){ // Checks for lowest alien
       let alien = alienList[i];
       if(alien.posY>lowestAlien){
         lowestAlien = alien.posY;
       }
     }
-    if(lowestAlien>=(height/2+height/5)-(0.5*30)-alien1anim1.height/2-height/80){
+    if(lowestAlien>=(height/2+height/5)-(0.5*30)-alien1anim1.height/2-height/80){ // If lowest alien is at the barrier position, game ends
       explosionSound.play();
       gameOver = true;
     }
-    for(let i=0;i<alienList.length;i++){
+    for(let i=0;i<alienList.length;i++){ // Displays each alien
       alienList[i].displayAliens();
     }
-    if(killCount>=60){
+    if(killCount>=60){ // Checks if alien kills is equal to amount of aliens
       win = true;
       gameOver = true;
     }
-    if(killCount>localStorage.getItem("spaceInvadersHighScore")){
+    if(killCount>localStorage.getItem("spaceInvadersHighScore")){ // Checks if kill count is more than a high score, or a better time
       localStorage.setItem("spaceInvadersHighScore", killCount);
       localStorage.setItem("spaceInvadersBestTime", timer);
       textSize(height/12/2);
@@ -239,7 +243,7 @@ function draw(){
     }
     fill(255);
     textSize(height/12/2);
-    text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10);
+    text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10); // Displays timer
     textSize(height/35/2)
     if(newHighScore===true&&localStorage.getItem("spaceInvadersHighScore")>0){
       fill(0,255,0);
@@ -251,21 +255,21 @@ function draw(){
     }
     highScoreSec = localStorage.getItem("spaceInvadersBestTime")-(highScoreMin*60)
     if(highScoreSec>=10){
-      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10);
+      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10); // Displays high score
     }
     else{
       text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13-10);
     }
   }
-  else{
-    for(let i=0;i<alienList.length;i++){
+  else{ // When game is over, this code runs
+    for(let i=0;i<alienList.length;i++){ // Displays stationary aliens
       alienList[i].displayAliens();
     }
     textSize(30);
     text("PRESS SPACE TO RESTART", width/2, height/2+90);
     textSize(50);
     if(win===false){
-      image(deadShip,shipX,shipY,width/10,height/30);
+      image(deadShip,shipX,shipY,width/10,height/30); // Displays exploded ship on loss
       fill(255,0,0);
       text("GAME OVER", width/2, height/2);
     }
@@ -273,15 +277,15 @@ function draw(){
       fill(0,255,0);
       text("YOU WIN", width/2, height/2);
       fill(255);
-      rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);
+      rect(shipX, shipY, width/14, height/40, 20, 20, 0, 0);  // Displays unexploded ship on victory
       rect(shipX, shipY-height/80, 10, 25);
     }
     fill(255);
     textSize(height/12/1.5);
-    text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10);
+    text(timeMin+":"+timerTen+timeHigh, width/2, height/13-10); // Displays timer
     textSize(height/35/2);
     if(highScoreSec>=10){
-      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10);
+      text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+highScoreSec, width-width/5, height/13-10); // Displays high score
     }
     else{
       text("High Score: "+localStorage.getItem("spaceInvadersHighScore")+" in "+highScoreMin+":"+"0"+highScoreSec, width-width/5, height/13-10);
@@ -296,13 +300,13 @@ function draw(){
     }
   }
   for(let i=0;i<brickList.length;i++){
-    brickList[i].displayBricks();
+    brickList[i].displayBricks(); // Displays barriers
   }
   textSize(height/12/1.5);
   text(killCount, width/13, height/13-10);
 }
 
-function keyReleased(){
+function keyReleased(){ // Allows player to rapid fire lasers, rather than waiting on a frame tick system as above
   if(((keyCode===UP_ARROW)||(keyCode===87))&&gameOver===false){
     pLaserList.push(new pLaser(shipX,shipY-height/80-25));
     shootSound.play();
@@ -315,7 +319,7 @@ class Alien{
     this.posY = posY;
     this.row = row;
   }
-  displayAliens(){
+  displayAliens(){ // Displays aliens based on position and animation
     if(alienFirstAnim===true){
       if(this.row===0){
         image(alien1anim1, this.posX, this.posY, alien1anim1.width/2, alien1anim1.height/2);
@@ -338,7 +342,7 @@ class Alien{
         image(alien3anim2, this.posX, this.posY, alien3anim2.width/2, alien3anim2.height/2);
       }
     }
-    if(right===true&&gameOver===false){
+    if(right===true&&gameOver===false){ // Alien movement
       this.posX+=alienVel;
       if(this.posX>width-alien1anim2.width/2){
         right = false;
@@ -360,9 +364,9 @@ class pLaser{
     this.pLaserX = pLaserX;
     this.pLaserY = pLaserY;
   }
-  displayPLaser(){
+  displayPLaser(){ 
     rect(this.pLaserX,this.pLaserY, 10, 35);
-    this.pLaserY-=15;
+    this.pLaserY-=15; // Laser movement
   }
 }
 
@@ -373,7 +377,7 @@ class aLaser{
   }
   displayALaser(){
     rect(this.aLaserX,this.aLaserY, 10, 35);
-    this.aLaserY+=15;
+    this.aLaserY+=15; // Laser movement
   }
 }
 
@@ -383,7 +387,7 @@ class Barrier{
     this.barrierY = barrierY;
     this.barrierNum = barrierNum;
   }
-  makeBricks(){
+  makeBricks(){ // Pushes new brick objects into brickList with distinct positioning
     for(let i=1;i<15;i++){
       let position = i;
       if(position===1){
@@ -438,7 +442,7 @@ class BarrierBrick{
     this.brickX = brickX;
     this.brickY = brickY;
   }
-  displayBricks(){
+  displayBricks(){ // For each item in bricks, displays the brick
     rect(this.brickX,this.brickY,20,30);
   }
 }
